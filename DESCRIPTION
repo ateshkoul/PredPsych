@@ -1,0 +1,17 @@
+Package: PredPsych
+Type: Package
+Title: Generic Package for Kinematic Analysis
+Version: 0.1
+Date: 2015-06-18
+Author: Atesh Koul
+Maintainer: <atesh.koul@iit.it>
+Description: The functions for Predictive approaches in Psychology
+License: GPL-V3
+LazyData: TRUE
+Depends:
+    R (>= 3.1.0)
+Imports:
+    plyr,
+    ggplot2,
+    openxlsx
+RoxygenNote: 5.0.1

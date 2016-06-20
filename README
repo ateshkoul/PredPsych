@@ -1,0 +1,15 @@
+This is a ReadMe for the PredPsych package.
+
+The functions are meant to provide a basic starting point. 
+
+The functions are provided as such and responsibility for checking results lies with the users.
+
+To install please use (in R command prompt):
+
+
+install.packages("devtools")
+devtools::install_github("ateshkoul/PredPsych")
+
+For details please contact: 
+Atesh Koul
+(atesh.koul@gmail.com)
