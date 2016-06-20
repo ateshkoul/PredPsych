@@ -45,3 +45,7 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+.Rproj.user/37A37ED/build_options
+*.pper
+.Rproj.user/37A37ED/sdb/s-41DFE1A7/lock_file
+.Rproj.user/37A37ED/saved_source_markers
