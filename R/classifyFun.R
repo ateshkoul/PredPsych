@@ -26,14 +26,14 @@
 #'Atesh Koul, RBCS, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-classifyFun <- function(classifierName,genclassifier,Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,...){
+classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
   library(e1071)
   library(caret)
   # dont use a constant set.seed with permutation testing
   # u will get a constant accuracy!!
-  set.seed(123)
+  #set.seed(123)
 
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
 
@@ -80,7 +80,11 @@ classifyFun <- function(classifierName,genclassifier,Data,predictorCol,selectedC
 
   trainIndexModel <- createFolds(ModelTrainData[,predictorColNames],list = FALSE,k = kFold)
 
-  print('Begining k-fold Classification')
+  if(!silent){
+    print('Begining k-fold Classification')
+  }
+  
+  
   for (i in 1:kFold){
     trainDataFold <- ModelTrainData[!trainIndexModel==i,]
     testDataFold <- ModelTrainData[trainIndexModel==i,]
@@ -92,13 +96,16 @@ classifyFun <- function(classifierName,genclassifier,Data,predictorCol,selectedC
     accTest[i] = do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
                                                  featureColNames=featureColNames,expand.grid(obj),...)))[["accTest"]]
   }
+  if(!silent){
+    print(paste("Mean CV Accuracy",signif(mean(acc),2)))
+    print(paste("Mean Test Accuracy",signif(mean(accTest),2)))
+  }
+  
 
-  print(paste("Mean CV Accuracy",mean(acc)))
-  print(paste("Mean Test Accuracy",mean(accTest)))
 
-
-Results <- list(acc=acc,accTest=accTest)
-return(Results)
+#Results <- list(acc=acc,accTest=accTest)
+#return(Results)
+return(mean(accTest))
 
 }
 

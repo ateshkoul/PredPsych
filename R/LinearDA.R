@@ -19,28 +19,47 @@
 #'Atesh Koul, RBCS, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-LinearDA <- function(Data,predictorCol,selectedCols){
+LinearDA <- function(Data,predictorCol,selectedCols,cvType){
   #simple function to perform linear discriminant analysis
   library(MASS)
   library(caret)
   set.seed(111)
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
-
+  if(missing(cvType))  cvType = "createDataPartition"
+  
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
   featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]
 
-
   Data[,predictorCol] <- factor(Data[,predictorCol])
-  # cross validate with 80% data in train set
-  index <- createDataPartition(Data[,predictorCol],p=0.8,times=1)
-  DataTrain <- KinData[1:nrow(Data) %in% index$Resample1,]
-  DataTest <- KinData[!(1:nrow(Data) %in% index$Resample1),]
-  fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])
-  predicted <- predict(fit,newdata=DataTest[,featureColNames])
-  print(table(predicted$class,DataTest[,predictorCol]))
-  acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
-  print(paste("The accuracy of discrimination was",signif(acc,2)))
+  if (cvType=="createDataPartition"){
+    
+    # cross validate with 80% data in train set
+    index <- createDataPartition(Data[,predictorCol],p=0.8,times=1)
+    DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]
+    DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
+    fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])
+    predicted <- predict(fit,newdata=DataTest[,featureColNames])
+    print(table(predicted$class,DataTest[,predictorCol]))
+    Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
+    print(paste("The accuracy of discrimination was",signif(Acc,2)))
+  }else if(cvType=="LOTO"){
+    index <- createFolds(Data[,predictorCol],k=nrow(Data),list=FALSE)
+    acc <- vector()
+    for(i in seq_along(index)){
+      print(paste("leaving out",i))
+      DataTrain <- Data[-i,]
+      DataTest <-  Data[i,]
+      fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])
+      predicted <- predict(fit,newdata=DataTest[,featureColNames])
+      #print(table(predicted$class,DataTest[,predictorCol]))
+      acc[i] <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
+    }
+    Acc <- mean(acc)
+    print(paste("The accuracy of discrimination was",signif(Acc,2)))
+  }  
+  
+  return(Acc)
 
 
 }

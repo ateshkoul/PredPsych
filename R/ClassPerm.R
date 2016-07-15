@@ -1,3 +1,5 @@
+############################################################## have to update this to be in coherence with other functions ##########################################################
+
 #'simple function to create permutation testing of a classifier
 #'
 #' Needs the following:
@@ -21,7 +23,7 @@
 #'Atesh Koul, RBCS, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
+ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,...){
   # classifierFun is a function that the use inputs to calculate the permutation scores
   # The form of this function should return accuracy as a single value.
   # Extra options should be specified in the classifier function
@@ -35,63 +37,39 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
   # a bit complicated to implement a generic way to feed in variable arguements
   # match variable input
   # extras <- match.call(expand.dots= F)$...
-
-
-
+  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+  
+  selectedColNames <- names(Data)[selectedCols]
+  # get feature columns without response
+  featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]
+  
+  # X <- Data[,featureColNames]
+  # Y <- Data[predictor]
+  
   if (missing(classifierFun)){
-    print("Performing Cross Validation")
-    classifierFun <- function(X,Y){
-      # a simplistic k-fold crossvalidation
-      # For cross validation
-      library(e1071)
-      #set.seed(111)
-      # defaults to 10 fold cross validation
-      k = 10
-      # use stratified cross validation instead
-      # use 80% data for training
-      trainIndex <- createFolds(Y, list = FALSE,k = k)
-      acc <- rep(NA,k)
-      for (i in 1:k){
-        trainX <- X[!trainIndex==i,]
-        testX <- X[trainIndex==i,]
-        trainY <- Y[!trainIndex==i]
-        testY <- Y[trainIndex==i]
-        model <- svm(trainX, trainY,kernel = "linear")
-        # test with train data
-        pred <- predict(model, testX)
-        acc[i] <- sum(1 * (pred==testY))/length(pred)
-      }
-
-      # old Method
-
-#       folds <- cvFolds(nrow(X),K = k)
-#       acc <- rep(NA,k)
-#
-#       for (i in 1:k){
-#         trainX <- X[folds$subsets[folds$which != i], ]
-#         testX <- X[folds$subsets[folds$which == i], ]
-#         trainY <- Y[folds$subsets[folds$which != i]]
-#         testY <- Y[folds$subsets[folds$which == i]]
-#         model <- svm(trainX, trainY,kernel = "linear")
-#         # test with train data
-#         pred <- predict(model, testX)
-#         acc[i] <- sum(1 * (pred==testY))/length(pred)
-#       }
-      return(mean(acc,na.rm=T))
-    }
+    
+    # if missing, use the default function of classifyFun from the library with default of svm
+    classifierFun <- classifyFun
   }
+  # else {
+  #   print(classifierFun)
+  #   classifierFun <- get(classifierFun)
+  # }
 
   # if your targets are not factors, make them..
-  if(!(is.factor(Y))) Y <- factor(Y)
-
+  if(!(is.factor(Data[,predictorCol]))) Data[,predictorCol] <- factor(Data[,predictorCol])
+  
+  set.seed(123)
+  print("Performing Cross Validation")
   # First calculate actual accuracy
-  actualAcc <- classifierFun(X,Y)
+  actualAcc <- classifierFun(Data,predictorCol,selectedCols,...)
   # calculate permutation scores by randomly sampling targets
-  chanceAcc <- 1/(length(unique(Y)))
+  chanceAcc <- 1/(length(unique(Data[,predictorCol])))
   # permutator is a simple function that randomly shuffles targets and spits out accuracies
-  permutator <-function(X,Y){
-    Y <- sample(Y)
-    NullAcc <- classifierFun(X,Y)
+  permutator <-function(Data,predictorCol,selectedCols){
+    Data[,predictorCol] <- sample(Data[,predictorCol])
+    # use silence to not print the accuracies multiple times
+    NullAcc <- classifierFun(Data,predictorCol,selectedCols,silent=TRUE,...)
     return(NullAcc)
   }
 
@@ -103,9 +81,9 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
   # important to set seed here not only for reproducibility
   # also so that we don't get same results over and over again if
   # we set seed in the classification function
-  set.seed(111)
+  #set.seed(111)
 
-  distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(X,Y),.progress = progress_time())))
+  distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(Data,predictorCol,selectedCols),.progress = progress_time())))
   p_value = sum(distNull$nullAcc >= actualAcc)
 
   # plot with automatically adjusting the height of the y-axis using 1 sd of the data
@@ -142,3 +120,72 @@ ClassPerm <- function(X,Y,classifierFun,nSims=1000,...){
 }
 
 
+LinearDAPerm <- function(X,Y,cvType="LOTO"){
+  #simple function to perform linear discriminant analysis
+  # DOn't set seed here as it goes back to the permutator function and constraints the sample 
+  # to set the same value for Y over and over again.
+  library(MASS)
+  library(caret)
+  if(cvType=="LOTO"){
+    index <- createFolds(Y,k=length(Y),list=FALSE)
+    acc <- vector()
+    
+    for(i in seq_along(index)){
+      XTrain <- X[-i,]
+      YTrain <- Y[-i]
+      XTest <-  X[i,]
+      YTest <-  Y[i]
+      fit <- lda(XTrain,grouping = YTrain)
+      predicted <- predict(fit,newdata=XTest)
+      #print(table(predicted$class,DataTest[,predictorCol]))
+      acc[i] <- sum(1 * (predicted$class==YTest))/length(predicted$class)
+    }
+    Acc <- mean(acc)
+    #print(paste("The accuracy of discrimination was",signif(Acc,2)))
+  }  
+  
+  return(Acc)
+  
+  
+}
+
+
+LinearSVM <- function(X,Y){
+  # a simplistic k-fold crossvalidation
+  # For cross validation
+  library(e1071)
+  #set.seed(111)
+  # defaults to 10 fold cross validation
+  k = 10
+  # use stratified cross validation instead
+  # use 80% data for training
+  trainIndex <- createFolds(Y, list = FALSE,k = k)
+  acc <- rep(NA,k)
+  for (i in 1:k){
+    trainX <- X[!trainIndex==i,]
+    testX <- X[trainIndex==i,]
+    trainY <- Y[!trainIndex==i]
+    testY <- Y[trainIndex==i]
+    model <- svm(trainX, trainY,kernel = "linear")
+    # test with train data
+    pred <- predict(model, testX)
+    acc[i] <- sum(1 * (pred==testY))/length(pred)
+  }
+  
+  # old Method
+  
+  #       folds <- cvFolds(nrow(X),K = k)
+  #       acc <- rep(NA,k)
+  #
+  #       for (i in 1:k){
+  #         trainX <- X[folds$subsets[folds$which != i], ]
+  #         testX <- X[folds$subsets[folds$which == i], ]
+  #         trainY <- Y[folds$subsets[folds$which != i]]
+  #         testY <- Y[folds$subsets[folds$which == i]]
+  #         model <- svm(trainX, trainY,kernel = "linear")
+  #         # test with train data
+  #         pred <- predict(model, testX)
+  #         acc[i] <- sum(1 * (pred==testY))/length(pred)
+  #       }
+  return(mean(acc,na.rm=T))
+}
