@@ -5,7 +5,7 @@
 ##' \enumerate{
 ##' \item Inputs
 ##'   \enumerate{
-##'     \item DataFrame = a data frame with regressors and response
+##'     \item Data = a data frame with regressors and response
 #'      \item responseCol = which column should be used as response col
 #'      \item selectedCol (optional) = which columns should be treated as data(features + response) (defaults to all columns)
 #'
@@ -20,30 +20,30 @@
 #'Atesh Koul, RBCS, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-CartModel <- function(DataFrame,responseCol,selectedCol,...){
+CartModel <- function(Data,responseCol,selectedCol,...){
 
   library(rpart)
   library(party)
   library(randomForest)
   library(caret)
 
-  if(missing(responseCol)) responseCol <- grep("Risposta",names(DataFrame))
+  if(missing(responseCol)) responseCol <- grep("Risposta",names(Data))
 
   # if nothing specific is provided, default to all the columns
-  if(missing(selectedCol))  selectedCol <- 1:length(names(DataFrame))
+  if(missing(selectedCol))  selectedCol <- 1:length(names(Data))
   # get the features
-  selectedColNames <- names(DataFrame)[selectedCol]
+  selectedColNames <- names(Data)[selectedCol]
   # get feature columns without response
-  featureColNames <- selectedColNames[-grep(names(DataFrame)[responseCol],selectedColNames)]
-  responseColName <- names(DataFrame)[responseCol]
+  featureColNames <- selectedColNames[-grep(names(Data)[responseCol],selectedColNames)]
+  responseColName <- names(Data)[responseCol]
 
   # make it a factor anyways
-  DataFrame[,responseCol] <- factor(DataFrame[,responseCol])
+  Data[,responseCol] <- factor(Data[,responseCol])
 
 
   print("Generating Full Model Tree")
   # Full tree
-  modelF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DataFrame[,selectedCol],method = 'class')
+  modelF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=Data[,selectedCol],method = 'class')
   summary(modelF)
   plotcp(modelF)
   # plot tree
@@ -54,7 +54,7 @@ CartModel <- function(DataFrame,responseCol,selectedCol,...){
 
   print("Generating crossvalidated Half Model Tree NO NA")
   # remove NAs as I use a stratified cross validation (may not be necessary)
-  DatNoNA <- DataFrame[!is.na(DataFrame[,responseCol]),]
+  DatNoNA <- Data[!is.na(Data[,responseCol]),]
   # Just to be sure that the response is a factor for classification
   DatNoNA[,responseCol] <- factor(DatNoNA[,responseCol])
 
@@ -83,8 +83,8 @@ CartModel <- function(DataFrame,responseCol,selectedCol,...){
   # just divide as test and train if u want
   k = 2
   trainIndex <- createFolds(DatNoNA[,responseCol],list = FALSE,k=k)
-  trainX <- DataFrame[trainIndex==1,]
-  testX <- DataFrame[!trainIndex==2,]
+  trainX <- Data[trainIndex==1,]
+  testX <- Data[!trainIndex==2,]
   modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
   preDicHF <- predict(modelHF,testX,type='matrix')
   summary(modelHF)

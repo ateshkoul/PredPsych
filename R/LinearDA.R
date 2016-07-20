@@ -19,7 +19,7 @@
 #'Atesh Koul, RBCS, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-LinearDA <- function(Data,predictorCol,selectedCols,cvType){
+LinearDA <- function(Data,predictorCol,selectedCols,cvType="createDataPartition"){
   #simple function to perform linear discriminant analysis
   library(MASS)
   library(caret)
@@ -40,14 +40,14 @@ LinearDA <- function(Data,predictorCol,selectedCols,cvType){
     DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
     fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])
     predicted <- predict(fit,newdata=DataTest[,featureColNames])
-    print(table(predicted$class,DataTest[,predictorCol]))
+    # print the confusion matrix
+    print(table(DataTest[,predictorCol],predicted$class,dnn = c("Actual","Predicted")))
     Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
     print(paste("The accuracy of discrimination was",signif(Acc,2)))
   }else if(cvType=="LOTO"){
     index <- createFolds(Data[,predictorCol],k=nrow(Data),list=FALSE)
     acc <- vector()
     for(i in seq_along(index)){
-      print(paste("leaving out",i))
       DataTrain <- Data[-i,]
       DataTest <-  Data[i,]
       fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])
