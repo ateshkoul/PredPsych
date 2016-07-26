@@ -7,11 +7,11 @@
 CartModel(Data, responseCol, selectedCol, tree, ...)
 }
 \arguments{
-\item{Data}{a data frame with regressors and response}
+\item{Data}{(dataframe) a data frame with regressors and response}
 
-\item{responseCol}{which column should be used as response col}
+\item{responseCol}{(numeric) which column should be used as response col}
 
-\item{selectedCol}{(optional) which columns should be treated as data(features + response) (defaults to all columns)}
+\item{selectedCol}{(optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)}
 
 \item{tree}{which cart model to implement; One of the following values:
 \itemize{

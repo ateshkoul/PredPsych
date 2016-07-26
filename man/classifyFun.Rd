@@ -13,19 +13,19 @@ classifyFun(Data, predictorCol, selectedCols, ranges = NULL, tune = FALSE,
 
 \item{predictorCol}{(numeric) column number that contains the variable to be predicted}
 
-\item{selectedCols}{(numeric) all the columns of data that would be used either as predictor or as feature}
+\item{selectedCols}{(optional) (numeric) all the columns of data that would be used either as predictor or as feature}
 
-\item{ranges}{(list)  ranges for tuning support vector machine}
+\item{ranges}{(optional) (list)  ranges for tuning support vector machine}
 
-\item{tune}{(logical) whether tuning of svm parameters should be performed or not}
+\item{tune}{(optional) (logical) whether tuning of svm parameters should be performed or not}
 
-\item{cost}{(numeric) regularization parameter of svm}
+\item{cost}{(optional) (numeric) regularization parameter of svm}
 
-\item{gamma}{(numeric)  rbf kernel parameter}
+\item{gamma}{(optional) (numeric)  rbf kernel parameter}
 
-\item{classifierName}{(string) name of the classifier to be used}
+\item{classifierName}{(optional) (string) name of the classifier to be used}
 
-\item{genclassifier}{(function or string) a classifier function or a name (e.g. Classifier.svm)}
+\item{genclassifier}{(optional) (function or string) a classifier function or a name (e.g. Classifier.svm)}
 }
 \value{
 Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}

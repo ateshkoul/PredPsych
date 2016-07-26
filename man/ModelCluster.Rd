@@ -9,7 +9,7 @@ ModelCluster(Data, NewData = NULL, ...)
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
 
-\item{NewData}{(dataframe) New Data frame for which the class membership is requested}
+\item{NewData}{(optional) (dataframe) New Data frame for which the class membership is requested}
 }
 \value{
 \code{class membership} of the clustered \code{NewData}

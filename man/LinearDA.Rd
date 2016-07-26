@@ -11,7 +11,9 @@ LinearDA(Data, predictorCol, selectedCols, cvType = "createDataPartition")
 
 \item{predictorCol}{(numeric)  column number that contains the variable to be predicted}
 
-\item{selectedCols}{(numeric)  all the columns of data that would be used either as predictor or as feature}
+\item{selectedCols}{(optional) (numeric)  all the columns of data that would be used either as predictor or as feature}
+
+\item{cvType}{(optional) (string) Cross validation type.}
 }
 \value{
 \code{accuracy} of discrimination

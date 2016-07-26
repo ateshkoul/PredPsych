@@ -11,11 +11,11 @@ ClassPerm(Data, predictorCol, selectedCols, classifierFun, nSims = 1000, ...)
 
 \item{predictorCol}{(numeric) column number that contains the variable to be predicted}
 
-\item{selectedCols}{(numeric) all the columns of data that would be used either as predictor or as feature}
+\item{selectedCols}{(optional) (numeric) all the columns of data that would be used either as predictor or as feature}
 
-\item{classifierFun}{(function) classifier function}
+\item{classifierFun}{(optional) (function) classifier function}
 
-\item{nSims}{(numeric) number of simulations}
+\item{nSims}{(optional) (numeric) number of simulations}
 }
 \value{
 Returns \code{actualAcc} of the classification analysis,
