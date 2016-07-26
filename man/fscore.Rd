@@ -2,30 +2,25 @@
 % Please edit documentation in R/fscores.R
 \name{fscore}
 \alias{fscore}
-\title{simple function to generate F-scores (Fisher scores) for ranking features}
+\title{f-score}
 \usage{
 fscore(Data, featSep, featureCol)
 }
+\arguments{
+\item{Data}{(dataframe) Data dataframe}
+
+\item{featureCol}{(numeric) all the columns that contain features}
+
+\item{featSel}{(numeric) column with different classes}
+}
+\value{
+named numeric \code{f-scores}
+}
 \description{
-Needs the following:
-:
-\enumerate{
-\item Inputs
-  \enumerate{
-    \item Data = Data dataframe
-     \item featSel = column with different classes
-     \item featureCol = all the columns that contain features
-}
-}
- \enumerate{
-\item Outputs
-  \enumerate{
-    \item named numeric f-scores
-}
-}
+A simple function to generate F-scores (Fisher scores) for ranking features
 }
 \author{
-Atesh Koul, RBCS, Istituto Italiano di technologia
+Atesh Koul, C'MON group, Istituto Italiano di technologia
 
 \email{atesh.koul@gmail.com}
 }

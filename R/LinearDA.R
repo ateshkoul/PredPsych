@@ -1,24 +1,15 @@
-#'simple function to perform cross-validated Linear Discriminant Analysis
+#' Cross-validated Linear Discriminant Analysis
 #'
-#' Needs the following:
-#' :
-##' \enumerate{
-##' \item Inputs
-##'   \enumerate{
-##'     \item Data = Data dataframe
-#'      \item predictorCol(numeric) = column number that contains the variable to be predicted
-#'      \item selectedCols(numeric) = all the columns of data that would be used either as predictor or as feature
-#'}
-#'}
-#'  \enumerate{
-##' \item Outputs
-##'   \enumerate{
-##'     \item accuracy of discrimination
-#'}
-#'}
+#' A simple function to perform cross-validated Linear Discriminant Analysis
+#' 
+#' @param Data                 (dataframe) Data dataframe
+#' @param predictorCol         (numeric)  column number that contains the variable to be predicted
+#' @param selectedCols         (optional) (numeric)  all the columns of data that would be used either as predictor or as feature
+#' @param cvType               (optional) (string) Cross validation type.
+#' @return \code{accuracy} of discrimination
 #'
 #'@author
-#'Atesh Koul, RBCS, Istituto Italiano di technologia
+#'Atesh Koul, C'MON group, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
 LinearDA <- function(Data,predictorCol,selectedCols,cvType="createDataPartition"){

@@ -1,21 +1,15 @@
-#'simple function to perform Model based cluster Analysis
+#' Model based Clustering
 #'
-#' Needs the following:
+#' A simple function to perform Model based cluster Analysis
 #' :
-##' \enumerate{
-##' \item Inputs
-##'   \enumerate{
-##'     \item Data = Data dataframe
-#'}
-#'}
-#'  \enumerate{
-##' \item Outputs
-##'   \enumerate{
-##'     \item class membership 
-#'}
-#'}
+#' @param Data    (dataframe) Data dataframe
+#' @param NewData (optional) (dataframe) New Data frame for which the class membership is requested
+#'
+##'@return \code{class membership} of the clustered \code{NewData} 
+#'
+#'
 #'@author
-#'Atesh Koul, RBCS, Istituto Italiano di technologia
+#'Atesh Koul, C'MON group, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
 ModelCluster <- function(Data,NewData=NULL,...){

@@ -1,24 +1,14 @@
-#'simple function to generate F-scores (Fisher scores) for ranking features
+#' f-score 
 #'
-#' Needs the following:
-#' :
-##' \enumerate{
-##' \item Inputs
-##'   \enumerate{
-##'     \item Data = Data dataframe
-#'      \item featSel = column with different classes
-#'      \item featureCol = all the columns that contain features
-#'}
-#'}
-#'  \enumerate{
-##' \item Outputs
-##'   \enumerate{
-##'     \item named numeric f-scores
-#'}
-#'}
+#' A simple function to generate F-scores (Fisher scores) for ranking features
+#' 
+##'@param Data        (dataframe) Data dataframe
+#' @param featSel     (numeric) column with different classes
+#' @param featureCol  (numeric) all the columns that contain features
+#' @return named numeric \code{f-scores} 
 #'
 #'@author
-#'Atesh Koul, RBCS, Istituto Italiano di technologia
+#'Atesh Koul, C'MON group, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
 fscore <- function(Data,featSep,featureCol){

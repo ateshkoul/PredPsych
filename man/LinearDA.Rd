@@ -2,30 +2,25 @@
 % Please edit documentation in R/LinearDA.R
 \name{LinearDA}
 \alias{LinearDA}
-\title{simple function to perform cross-validated Linear Discriminant Analysis}
+\title{Cross-validated Linear Discriminant Analysis}
 \usage{
 LinearDA(Data, predictorCol, selectedCols, cvType = "createDataPartition")
 }
+\arguments{
+\item{Data}{(dataframe) Data dataframe}
+
+\item{predictorCol}{(numeric)  column number that contains the variable to be predicted}
+
+\item{selectedCols}{(numeric)  all the columns of data that would be used either as predictor or as feature}
+}
+\value{
+\code{accuracy} of discrimination
+}
 \description{
-Needs the following:
-:
-\enumerate{
-\item Inputs
-  \enumerate{
-    \item Data = Data dataframe
-     \item predictorCol(numeric) = column number that contains the variable to be predicted
-     \item selectedCols(numeric) = all the columns of data that would be used either as predictor or as feature
-}
-}
- \enumerate{
-\item Outputs
-  \enumerate{
-    \item accuracy of discrimination
-}
-}
+A simple function to perform cross-validated Linear Discriminant Analysis
 }
 \author{
-Atesh Koul, RBCS, Istituto Italiano di technologia
+Atesh Koul, C'MON group, Istituto Italiano di technologia
 
 \email{atesh.koul@gmail.com}
 }

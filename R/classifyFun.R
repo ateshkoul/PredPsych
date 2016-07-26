@@ -1,28 +1,21 @@
 #' Generic Classification Analyses
 #'
 #' function for performing generic classification Analysis
-#' :
-##' \enumerate{
-##' \item Inputs
-##'   \enumerate{
-#'     \item Data(dataframe) = dataframe of the data
-#'      \item predictorCol(numeric) = column number that contains the variable to be predicted
-#'      \item selectedCols(numeric) = all the columns of data that would be used either as predictor or as feature
-#'      \item classifierName(string) = name of the classifier to be used
-#'      \item genclassifier(function or string) = a classifier function or a name (e.g. Classifier.svm)
-#'      \item ranges(list) = ranges for tuning support vector machine
-#'      \item tune(logical) = whether tuning of svm parameters should be performed or not
-#'      \item cost(numeric) = regularization parameter of svm
-#'      \item gamma(numeric) = rbf kernel parameter
-#'}      
-#'  \enumerate{
-##' \item Outputs
-##'   \enumerate{
-##'     \item acc = crossvalidation accuracy
-##'     \item accTest = Test accuracy
-#'}
-#'}
-#'}
+#' 
+#' @param Data            (dataframe) dataframe of the data
+#' @param predictorCol    (numeric) column number that contains the variable to be predicted
+#' @param selectedCols    (optional) (numeric) all the columns of data that would be used either as predictor or as feature
+#' @param classifierName  (optional) (string) name of the classifier to be used
+#' @param genclassifier   (optional) (function or string) a classifier function or a name (e.g. Classifier.svm)
+#' @param ranges          (optional) (list)  ranges for tuning support vector machine
+#' @param tune            (optional) (logical) whether tuning of svm parameters should be performed or not
+#' @param cost            (optional) (numeric) regularization parameter of svm
+#' @param gamma           (optional) (numeric)  rbf kernel parameter
+#'
+#' @return Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
+#'
+#'
+#'
 #'
 #'@author
 #'Atesh Koul, C'MON group, Istituto Italiano di technologia

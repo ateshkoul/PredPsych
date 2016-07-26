@@ -2,28 +2,24 @@
 % Please edit documentation in R/ModelCluster.R
 \name{ModelCluster}
 \alias{ModelCluster}
-\title{simple function to perform Model based cluster Analysis}
+\title{Model based Clustering}
 \usage{
 ModelCluster(Data, NewData = NULL, ...)
 }
+\arguments{
+\item{Data}{(dataframe) Data dataframe}
+
+\item{NewData}{(dataframe) New Data frame for which the class membership is requested}
+}
+\value{
+\code{class membership} of the clustered \code{NewData}
+}
 \description{
-Needs the following:
+A simple function to perform Model based cluster Analysis
 :
-\enumerate{
-\item Inputs
-  \enumerate{
-    \item Data = Data dataframe
-}
-}
- \enumerate{
-\item Outputs
-  \enumerate{
-    \item class membership 
-}
-}
 }
 \author{
-Atesh Koul, RBCS, Istituto Italiano di technologia
+Atesh Koul, C'MON group, Istituto Italiano di technologia
 
 \email{atesh.koul@gmail.com}
 }

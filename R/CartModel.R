@@ -1,33 +1,21 @@
 #' Generic Classification and Regression Tree Function
 #' 
 #'
-#' simple function to create Classification and Regression Trees
+#' A simple function to create Classification and Regression Trees
 #' 
-#' \itemize{
-#' \item Inputs
-#'   \itemize{
-#'     \item Data = a data frame with regressors and response
-#'      \item responseCol = which column should be used as response col
-#'      \item selectedCol (optional) = which columns should be treated as data(features + response) (defaults to all columns)
-#'      \item tree = which cart model to implement; One of the following values:
-#'      modelF = Full Model Tree; 
-#'      modelNAHF = crossvalidated Half Model Tree removing missing values;
-#'      modelHF = crossvalidated Half Model Tree With missing values;
-#'      modelCF = Conditional inference framework Tree;
-#'      modelRF = Random Forest Tree;
-#'}
-#'}
-#'
-#'
-#'  \itemize{
-#' \item Outputs
-#'   \itemize{
-#'     \item Results = Cart model result for the input tree
-#'}
-#'}
-#'
-#'
-#'
+#' @param Data         (dataframe) a data frame with regressors and response
+#' @param responseCol  (numeric) which column should be used as response col
+#' @param selectedCol  (optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)
+#' @param tree         which cart model to implement; One of the following values:
+#'      \itemize{
+#'      \item modelF  =   Full Model Tree; 
+#'      \item modelNAHF = Crossvalidated Half Model Tree removing missing values;
+#'      \item modelHF =   Crossvalidated Half Model Tree With missing values;
+#'      \item modelCF =   Conditional inference framework Tree;
+#'      \item modelRF =   Random Forest Tree;    
+#'      }
+#'          
+#' @return  Cart model result for the input tree \code{Results}  
 #'
 #'@author
 #'Atesh Koul, C'MON group, Istituto Italiano di technologia

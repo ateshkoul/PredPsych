@@ -6,30 +6,26 @@
 \usage{
 ClassPerm(Data, predictorCol, selectedCols, classifierFun, nSims = 1000, ...)
 }
+\arguments{
+\item{Data}{(dataframe) dataframe of the data}
+
+\item{predictorCol}{(numeric) column number that contains the variable to be predicted}
+
+\item{selectedCols}{(numeric) all the columns of data that would be used either as predictor or as feature}
+
+\item{classifierFun}{(function) classifier function}
+
+\item{nSims}{(numeric) number of simulations}
+}
+\value{
+Returns \code{actualAcc} of the classification analysis,
+ \code{p-value} from permutation testing, \code{nullAcc} distribution of the permutation \code{figure} containing null distribution
+}
 \description{
 simple function to create permutation testing of a classifier
-:
-\enumerate{
-\item Inputs
-  \enumerate{
-    \item X = Data matrix
-     \item Y = labels
-     \item classifierFun = classifier function
-     \item nSims = number of simulations
-}
-}
-}
-\details{
-\enumerate{
-\item Outputs
-  \enumerate{
-    \item p-value from permutation
-    \item figure containing null distribution
-}
-}
 }
 \author{
-Atesh Koul, RBCS, Istituto Italiano di technologia
+Atesh Koul, C'MON group, Istituto Italiano di technologia
 
 \email{atesh.koul@gmail.com}
 }

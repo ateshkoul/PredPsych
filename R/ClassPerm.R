@@ -1,27 +1,18 @@
 #' Permutation Analysis for classification
 #'
 #' simple function to create permutation testing of a classifier
-#' :
-##' \enumerate{
-##' \item Inputs
-##'   \enumerate{
-##'     \item X = Data matrix
-#'      \item Y = labels
-#'      \item classifierFun = classifier function
-#'      \item nSims = number of simulations
-#'}
-#'}
+#' 
+#' @param Data            (dataframe) dataframe of the data
+#' @param predictorCol    (numeric) column number that contains the variable to be predicted
+#' @param selectedCols    (optional) (numeric) all the columns of data that would be used either as predictor or as feature
+#' @param classifierFun   (optional) (function) classifier function
+#' @param nSims           (optional) (numeric) number of simulations
 #'
-#'  \enumerate{
-##' \item Outputs
-##'   \enumerate{
-##'     \item p-value from permutation
-##'     \item figure containing null distribution
-#'}
-#'}
+#' @return Returns \code{actualAcc} of the classification analysis,
+#'  \code{p-value} from permutation testing, \code{nullAcc} distribution of the permutation \code{figure} containing null distribution
 #'
 #'@author
-#'Atesh Koul, RBCS, Istituto Italiano di technologia
+#'Atesh Koul, C'MON group, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
 ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,...){

@@ -6,31 +6,27 @@
 \usage{
 CartModel(Data, responseCol, selectedCol, tree, ...)
 }
-\description{
-simple function to create Classification and Regression Trees
-}
-\details{
-\itemize{
-\item Inputs
-  \itemize{
-    \item Data = a data frame with regressors and response
-     \item responseCol = which column should be used as response col
-     \item selectedCol (optional) = which columns should be treated as data(features + response) (defaults to all columns)
-     \item tree = which cart model to implement; One of the following values:
-     modelF = Full Model Tree; 
-     modelNAHF = crossvalidated Half Model Tree removing missing values;
-     modelHF = crossvalidated Half Model Tree With missing values;
-     modelCF = Conditional inference framework Tree;
-     modelRF = Random Forest Tree;
-}
-}
+\arguments{
+\item{Data}{a data frame with regressors and response}
 
+\item{responseCol}{which column should be used as response col}
+
+\item{selectedCol}{(optional) which columns should be treated as data(features + response) (defaults to all columns)}
+
+\item{tree}{which cart model to implement; One of the following values:
 \itemize{
-\item Outputs
-  \itemize{
-    \item Results = Cart model result for the input tree
+\item modelF  =   Full Model Tree; 
+\item modelNAHF = Crossvalidated Half Model Tree removing missing values;
+\item modelHF =   Crossvalidated Half Model Tree With missing values;
+\item modelCF =   Conditional inference framework Tree;
+\item modelRF =   Random Forest Tree;    
+}}
 }
+\value{
+Cart model result for the input tree \code{Results}
 }
+\description{
+A simple function to create Classification and Regression Trees
 }
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia
