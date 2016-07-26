@@ -14,13 +14,15 @@
 #'      \item tune(logical) = whether tuning of svm parameters should be performed or not
 #'      \item cost(numeric) = regularization parameter of svm
 #'      \item gamma(numeric) = rbf kernel parameter
-#'
+#'}
+#'}
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
 ##'     \item acc = crossvalidation accuracy
 ##'     \item accTest = Test accuracy
-#'
+#'}
+#'}
 #'
 #'@author
 #'Atesh Koul, RBCS, Istituto Italiano di technologia

@@ -8,12 +8,14 @@
 ##'     \item Data = Data dataframe
 #'      \item predictorCol(numeric) = column number that contains the variable to be predicted
 #'      \item selectedCols(numeric) = all the columns of data that would be used either as predictor or as feature
-#'
+#'}
+#'}
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
 ##'     \item accuracy of discrimination
-#'
+#'}
+#'}
 #'
 #'@author
 #'Atesh Koul, RBCS, Istituto Italiano di technologia

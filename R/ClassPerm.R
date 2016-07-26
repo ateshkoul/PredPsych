@@ -11,13 +11,15 @@
 #'      \item Y = labels
 #'      \item classifierFun = classifier function
 #'      \item nSims = number of simulations
-#'
+#'}
+#'}
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
 ##'     \item p-value from permutation
 ##'     \item figure containing null distribution
-#'
+#'}
+#'}
 #'
 #'@author
 #'Atesh Koul, RBCS, Istituto Italiano di technologia

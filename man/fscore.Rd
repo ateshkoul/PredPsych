@@ -6,6 +6,24 @@
 \usage{
 fscore(Data, featSep, featureCol)
 }
+\description{
+Needs the following:
+:
+\enumerate{
+\item Inputs
+  \enumerate{
+    \item Data = Data dataframe
+     \item featSel = column with different classes
+     \item featureCol = all the columns that contain features
+}
+}
+ \enumerate{
+\item Outputs
+  \enumerate{
+    \item named numeric f-scores
+}
+}
+}
 \author{
 Atesh Koul, RBCS, Istituto Italiano di technologia
 

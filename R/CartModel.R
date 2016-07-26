@@ -15,13 +15,15 @@
 #'      modelHF = crossvalidated Half Model Tree With missing values;
 #'      modelCF = Conditional inference framework Tree;
 #'      modelRF = Random Forest Tree;
-#'
+#'}
+#'}
 #'
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
 ##'     \item Results = Cart model result for the input tree
-#'
+#'}
+#'}
 #'
 #'@author
 #'Atesh Koul, C'MON group, Istituto Italiano di technologia

@@ -6,6 +6,32 @@
 \usage{
 CartModel(Data, responseCol, selectedCol, tree, ...)
 }
+\description{
+Needs the following:
+:
+\enumerate{
+\item Inputs
+  \enumerate{
+    \item Data = a data frame with regressors and response
+     \item responseCol = which column should be used as response col
+     \item selectedCol (optional) = which columns should be treated as data(features + response) (defaults to all columns)
+     \item tree = which cart model to implement; One of the following values:
+     modelF = Full Model Tree; 
+     modelNAHF = crossvalidated Half Model Tree removing missing values;
+     modelHF = crossvalidated Half Model Tree With missing values;
+     modelCF = Conditional inference framework Tree;
+     modelRF = Random Forest Tree;
+}
+}
+}
+\details{
+\enumerate{
+\item Outputs
+  \enumerate{
+    \item Results = Cart model result for the input tree
+}
+}
+}
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia
 

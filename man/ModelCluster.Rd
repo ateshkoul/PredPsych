@@ -6,6 +6,22 @@
 \usage{
 ModelCluster(Data, NewData = NULL, ...)
 }
+\description{
+Needs the following:
+:
+\enumerate{
+\item Inputs
+  \enumerate{
+    \item Data = Data dataframe
+}
+}
+ \enumerate{
+\item Outputs
+  \enumerate{
+    \item class membership 
+}
+}
+}
 \author{
 Atesh Koul, RBCS, Istituto Italiano di technologia
 
