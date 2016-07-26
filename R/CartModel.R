@@ -23,9 +23,9 @@
 #'\email{atesh.koul@@gmail.com}
 CartModel <- function(Data,responseCol,selectedCol,tree,...){
 
-  library(rpart)
-  library(party)
-  library(randomForest)
+  
+  
+  
   library(caret)
 
   # if nothing specific is provided, default to all the columns
@@ -40,14 +40,18 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
   Data[,responseCol] <- factor(Data[,responseCol])
 
   switch(tree,
-         modelF = {print("Generating Full Model Tree")
+         modelF = {
+           library(rpart)
+           print("Generating Full Model Tree")
            # Full tree
            modelF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=Data[,selectedCol],method = 'class')  
            #summary(modelF)
            plotcp(modelF)
            # plot tree
-           print(plot(modelF, uniform=TRUE,main="Classification Tree"))
-           print(text(modelF, use.n=TRUE, all=TRUE, cex=.8))
+           plot(modelF, uniform=TRUE,main="Classification Tree")
+           text(modelF, use.n=TRUE, all=TRUE, cex=.8)
+           print(modelF)
+           print('done')
            return(modelF)},
          
            modelNAHF = {print("Generating crossvalidated Half Model Tree NO NA")
@@ -71,10 +75,12 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
               testX <- DatNoNA[!trainIndex==2,]
               modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
               preDicNAHF <- predict(modelNAHF,testX,type='matrix')
-              #summary(modelNAHF)
-              print(plot(modelNAHF, uniform=TRUE,
-                         main="Classification Tree HF"))
-              print(text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8))
+              summary(modelNAHF)
+              plot(modelNAHF, uniform=TRUE,
+                         main="Classification Tree HF")
+              text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8)
+              print(modelNAHF)
+              print('done')
               return(modelNAHF)},
          modelHF = {print("Generating crossvalidated Half Model Tree With NA")
            # just divide as test and train if u want
@@ -85,8 +91,11 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
             modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
             preDicHF <- predict(modelHF,testX,type='matrix')
             #summary(modelHF)
+            print(modelHF)
+            print('done')
             return(modelHF)},
          modelCF = {# Cluster tree
+           library(party)
            print("Generating conditional inference framework Tree")
            # remove NAs as I use a stratified cross validation (may not be necessary)
            DatNoNA <- Data[!is.na(Data[,responseCol]),]
@@ -94,9 +103,12 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
            DatNoNA[,responseCol] <- factor(DatNoNA[,responseCol])
            modelCF <- ctree(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DatNoNA[,selectedCol])
            #summary(modelCF)
-           print(plot(modelCF))
+           plot(modelCF)
+           print(modelCF)
+           print('done')
            return(modelCF)},
          modelRF = {  # Random forest
+           library(randomForest)
             print("Generating Random Forest Tree")
            # remove NAs as I use a stratified cross validation (may not be necessary)
            DatNoNA <- Data[!is.na(Data[,responseCol]),]
@@ -106,6 +118,7 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
            print(modelRF) # view results
            # importance of each predictor
            print(importance(modelRF)) 
+           print('done')
            return(modelRF)}
   )
 }
