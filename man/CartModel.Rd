@@ -8,10 +8,11 @@ CartModel(Data, responseCol, selectedCol, tree, ...)
 }
 \description{
 simple function to create Classification and Regression Trees
-:
-\enumerate{
+}
+\details{
+\itemize{
 \item Inputs
-  \enumerate{
+  \itemize{
     \item Data = a data frame with regressors and response
      \item responseCol = which column should be used as response col
      \item selectedCol (optional) = which columns should be treated as data(features + response) (defaults to all columns)
@@ -22,11 +23,12 @@ simple function to create Classification and Regression Trees
      modelCF = Conditional inference framework Tree;
      modelRF = Random Forest Tree;
 }
- \enumerate{
-\item Outputs
-  \enumerate{
-    \item Results = Cart model result for the input tree
 }
+
+\itemize{
+\item Outputs
+  \itemize{
+    \item Results = Cart model result for the input tree
 }
 }
 }

@@ -9,7 +9,8 @@
 #'      \item Y = labels
 #'      \item classifierFun = classifier function
 #'      \item nSims = number of simulations
-#'
+#'}
+#'}
 #'
 #'  \enumerate{
 ##' \item Outputs

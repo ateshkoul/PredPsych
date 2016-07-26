@@ -6,6 +6,19 @@
 \usage{
 ClassPerm(Data, predictorCol, selectedCols, classifierFun, nSims = 1000, ...)
 }
+\description{
+simple function to create permutation testing of a classifier
+:
+\enumerate{
+\item Inputs
+  \enumerate{
+    \item X = Data matrix
+     \item Y = labels
+     \item classifierFun = classifier function
+     \item nSims = number of simulations
+}
+}
+}
 \details{
 \enumerate{
 \item Outputs

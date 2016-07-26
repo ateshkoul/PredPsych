@@ -2,11 +2,11 @@
 #' 
 #'
 #' simple function to create Classification and Regression Trees
-#' :
-##' \enumerate{
-##' \item Inputs
-##'   \enumerate{
-##'     \item Data = a data frame with regressors and response
+#' 
+#' \itemize{
+#' \item Inputs
+#'   \itemize{
+#'     \item Data = a data frame with regressors and response
 #'      \item responseCol = which column should be used as response col
 #'      \item selectedCol (optional) = which columns should be treated as data(features + response) (defaults to all columns)
 #'      \item tree = which cart model to implement; One of the following values:
@@ -16,13 +16,18 @@
 #'      modelCF = Conditional inference framework Tree;
 #'      modelRF = Random Forest Tree;
 #'}
-#'  \enumerate{
-##' \item Outputs
-##'   \enumerate{
-##'     \item Results = Cart model result for the input tree
+#'}
+#'
+#'
+#'  \itemize{
+#' \item Outputs
+#'   \itemize{
+#'     \item Results = Cart model result for the input tree
 #'}
 #'}
-#'}
+#'
+#'
+#'
 #'
 #'@author
 #'Atesh Koul, C'MON group, Istituto Italiano di technologia
