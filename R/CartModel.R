@@ -1,7 +1,7 @@
-#'simple function to create Classification and Regression tree of Data
+#' Generic Classification and Regression Tree Function
 #' 
 #'
-#' Needs the following:
+#' simple function to create Classification and Regression Trees
 #' :
 ##' \enumerate{
 ##' \item Inputs
@@ -16,12 +16,11 @@
 #'      modelCF = Conditional inference framework Tree;
 #'      modelRF = Random Forest Tree;
 #'}
-#'}
-#'
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
 ##'     \item Results = Cart model result for the input tree
+#'}
 #'}
 #'}
 #'

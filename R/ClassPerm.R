@@ -1,8 +1,6 @@
-############################################################## have to update this to be in coherence with other functions ##########################################################
-
-#'simple function to create permutation testing of a classifier
+#' Permutation Analysis for classification
 #'
-#' Needs the following:
+#' simple function to create permutation testing of a classifier
 #' :
 ##' \enumerate{
 ##' \item Inputs
@@ -11,8 +9,8 @@
 #'      \item Y = labels
 #'      \item classifierFun = classifier function
 #'      \item nSims = number of simulations
-#'}
-#'}
+#'
+#'
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{

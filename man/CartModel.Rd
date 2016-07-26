@@ -2,12 +2,12 @@
 % Please edit documentation in R/CartModel.R
 \name{CartModel}
 \alias{CartModel}
-\title{simple function to create Classification and Regression tree of Data}
+\title{Generic Classification and Regression Tree Function}
 \usage{
 CartModel(Data, responseCol, selectedCol, tree, ...)
 }
 \description{
-Needs the following:
+simple function to create Classification and Regression Trees
 :
 \enumerate{
 \item Inputs
@@ -22,13 +22,11 @@ Needs the following:
      modelCF = Conditional inference framework Tree;
      modelRF = Random Forest Tree;
 }
-}
-}
-\details{
-\enumerate{
+ \enumerate{
 \item Outputs
   \enumerate{
     \item Results = Cart model result for the input tree
+}
 }
 }
 }

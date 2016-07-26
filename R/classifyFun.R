@@ -1,21 +1,20 @@
-#'simple function to create permutation testing of a classifier
+#' Generic Classification Analyses
 #'
-#' Needs the following:
+#' function for performing generic classification Analysis
 #' :
 ##' \enumerate{
 ##' \item Inputs
 ##'   \enumerate{
-##'     \item classifierName(string) = name of the classifier to be used
-#'      \item genclassifier(function or string) = a classifier function or a name (e.g. Classifier.svm)
-#'      \item Data(dataframe) = dataframe of the data
+#'     \item Data(dataframe) = dataframe of the data
 #'      \item predictorCol(numeric) = column number that contains the variable to be predicted
 #'      \item selectedCols(numeric) = all the columns of data that would be used either as predictor or as feature
+#'      \item classifierName(string) = name of the classifier to be used
+#'      \item genclassifier(function or string) = a classifier function or a name (e.g. Classifier.svm)
 #'      \item ranges(list) = ranges for tuning support vector machine
 #'      \item tune(logical) = whether tuning of svm parameters should be performed or not
 #'      \item cost(numeric) = regularization parameter of svm
 #'      \item gamma(numeric) = rbf kernel parameter
-#'}
-#'}
+#'}      
 #'  \enumerate{
 ##' \item Outputs
 ##'   \enumerate{
@@ -23,9 +22,10 @@
 ##'     \item accTest = Test accuracy
 #'}
 #'}
+#'}
 #'
 #'@author
-#'Atesh Koul, RBCS, Istituto Italiano di technologia
+#'Atesh Koul, C'MON group, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
 classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,...){

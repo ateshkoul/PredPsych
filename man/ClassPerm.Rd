@@ -2,23 +2,12 @@
 % Please edit documentation in R/ClassPerm.R
 \name{ClassPerm}
 \alias{ClassPerm}
-\title{simple function to create permutation testing of a classifier}
+\title{Permutation Analysis for classification}
 \usage{
 ClassPerm(Data, predictorCol, selectedCols, classifierFun, nSims = 1000, ...)
 }
-\description{
-Needs the following:
-:
+\details{
 \enumerate{
-\item Inputs
-  \enumerate{
-    \item X = Data matrix
-     \item Y = labels
-     \item classifierFun = classifier function
-     \item nSims = number of simulations
-}
-}
- \enumerate{
 \item Outputs
   \enumerate{
     \item p-value from permutation
