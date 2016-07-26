@@ -79,7 +79,7 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
          modelHF = {print("Generating crossvalidated Half Model Tree With NA")
            # just divide as test and train if u want
             k = 2
-            trainIndex <- createFolds(DatNoNA[,responseCol],list = FALSE,k=k)
+            trainIndex <- createFolds(Data[,responseCol],list = FALSE,k=k)
             trainX <- Data[trainIndex==1,]
             testX <- Data[!trainIndex==2,]
             modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
@@ -88,16 +88,24 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
             return(modelHF)},
          modelCF = {# Cluster tree
            print("Generating conditional inference framework Tree")
-            modelCF <- ctree(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DatNoNA[,selectedCol])
-            #summary(modelCF)
-            print(plot(modelCF))
-            return(modelCF)},
+           # remove NAs as I use a stratified cross validation (may not be necessary)
+           DatNoNA <- Data[!is.na(Data[,responseCol]),]
+           # Just to be sure that the response is a factor for classification
+           DatNoNA[,responseCol] <- factor(DatNoNA[,responseCol])
+           modelCF <- ctree(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DatNoNA[,selectedCol])
+           #summary(modelCF)
+           print(plot(modelCF))
+           return(modelCF)},
          modelRF = {  # Random forest
             print("Generating Random Forest Tree")
-            modelRF <- randomForest(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DatNoNA[,selectedCol])
-            print(modelRF) # view results
-            # importance of each predictor
-            print(importance(modelRF)) 
-            return(modelRF)}
+           # remove NAs as I use a stratified cross validation (may not be necessary)
+           DatNoNA <- Data[!is.na(Data[,responseCol]),]
+           # Just to be sure that the response is a factor for classification
+           DatNoNA[,responseCol] <- factor(DatNoNA[,responseCol])
+           modelRF <- randomForest(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DatNoNA[,selectedCol])
+           print(modelRF) # view results
+           # importance of each predictor
+           print(importance(modelRF)) 
+           return(modelRF)}
   )
 }
