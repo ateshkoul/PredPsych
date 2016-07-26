@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' f-score \n#'\n#' A simple function to generate F-scores (Fisher scores) for ranking features\n#' \n##'@param Data        (dataframe) Data dataframe\n#' @param featSel     (numeric) column with different classes\n#' @param featureCol  (numeric) all the columns that contain features\n#' @return named numeric \\code{f-scores} \n#'\n#'@author\n#'Atesh Koul, C'MON group, Istituto Italiano di technologia\n#'\n#'\\email{atesh.koul@@gmail.com}\nfscore <- function(Data,featSep,featureCol){\n  tr <- function(m) return(sum(diag(m)))\n  # separate positive and negative feature sets\n  posIns  <- Data[Data[,featSep]==unique(Data[,featSep])[1],]\n  negIns  <- Data[Data[,featSep]==unique(Data[,featSep])[2],]\n  f_score <- vector()\n  featureColNames <- names(Data)[featureCol]\n\n  for(feature in featureColNames){\n    f_score[feature] = (norm(as.matrix(mean(posIns[,feature])-mean(negIns[,feature])))^2)/(tr(cov(as.matrix(posIns[,feature]))) + tr(cov(as.matrix(negIns[,feature]))))\n  }\n  return(f_score)\n}\n",
+    "created" : 1469537896587.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2927661246",
+    "id" : "65A01A14",
+    "lastKnownWriteTime" : 1469540787,
+    "last_content_update" : 1469540787174,
+    "path" : "D:/SVNWorkingDir/CMON/ReadingIntention/CommonScripts/PredPsych/R/fscores.R",
+    "project_path" : "R/fscores.R",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

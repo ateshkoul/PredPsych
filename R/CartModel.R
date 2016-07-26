@@ -54,7 +54,9 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
            print('done')
            return(modelF)},
          
-           modelNAHF = {print("Generating crossvalidated Half Model Tree NO NA")
+           modelNAHF = {
+             library(rpart)
+             print("Generating crossvalidated Half Model Tree NO NA")
              # remove NAs as I use a stratified cross validation (may not be necessary)
              DatNoNA <- Data[!is.na(Data[,responseCol]),]
              # Just to be sure that the response is a factor for classification
@@ -82,7 +84,9 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
               print(modelNAHF)
               print('done')
               return(modelNAHF)},
-         modelHF = {print("Generating crossvalidated Half Model Tree With NA")
+         modelHF = {
+           library(rpart)
+           print("Generating crossvalidated Half Model Tree With NA")
            # just divide as test and train if u want
             k = 2
             trainIndex <- createFolds(Data[,responseCol],list = FALSE,k=k)

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Cross-validated Linear Discriminant Analysis\n#'\n#' A simple function to perform cross-validated Linear Discriminant Analysis\n#' \n#' @param Data                 (dataframe) Data dataframe\n#' @param predictorCol         (numeric)  column number that contains the variable to be predicted\n#' @param selectedCols         (optional) (numeric)  all the columns of data that would be used either as predictor or as feature\n#' @param cvType               (optional) (string) Cross validation type.\n#' @return \\code{accuracy} of discrimination\n#'\n#'@author\n#'Atesh Koul, C'MON group, Istituto Italiano di technologia\n#'\n#'\\email{atesh.koul@@gmail.com}\nLinearDA <- function(Data,predictorCol,selectedCols,cvType=\"createDataPartition\"){\n  #simple function to perform linear discriminant analysis\n  library(MASS)\n  library(caret)\n  set.seed(111)\n  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))\n  if(missing(cvType))  cvType = \"createDataPartition\"\n  \n  selectedColNames <- names(Data)[selectedCols]\n  # get feature columns without response\n  featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]\n\n  Data[,predictorCol] <- factor(Data[,predictorCol])\n  if (cvType==\"createDataPartition\"){\n    \n    # cross validate with 80% data in train set\n    index <- createDataPartition(Data[,predictorCol],p=0.8,times=1)\n    DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]\n    DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]\n    fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])\n    predicted <- predict(fit,newdata=DataTest[,featureColNames])\n    # print the confusion matrix\n    print(table(DataTest[,predictorCol],predicted$class,dnn = c(\"Actual\",\"Predicted\")))\n    Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)\n    print(paste(\"The accuracy of discrimination was\",signif(Acc,2)))\n  }else if(cvType==\"LOTO\"){\n    index <- createFolds(Data[,predictorCol],k=nrow(Data),list=FALSE)\n    acc <- vector()\n    for(i in seq_along(index)){\n      DataTrain <- Data[-i,]\n      DataTest <-  Data[i,]\n      fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol])\n      predicted <- predict(fit,newdata=DataTest[,featureColNames])\n      #print(table(predicted$class,DataTest[,predictorCol]))\n      acc[i] <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)\n    }\n    Acc <- mean(acc)\n    print(paste(\"The accuracy of discrimination was\",signif(Acc,2)))\n  }  \n  \n  return(Acc)\n\n\n}\n",
+    "created" : 1469537958044.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2460672846",
+    "id" : "F62C3968",
+    "lastKnownWriteTime" : 1469541044,
+    "last_content_update" : 1469541044877,
+    "path" : "D:/SVNWorkingDir/CMON/ReadingIntention/CommonScripts/PredPsych/R/LinearDA.R",
+    "project_path" : "R/LinearDA.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
