@@ -17,10 +17,13 @@
 #'Atesh Koul, RBCS, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-ModelCluster <- function(clustData,NewData){
+ModelCluster <- function(Data,NewData=NULL,...){
   library(mclust)
-  model <- Mclust(Data)
-  print(paste("optimal number of clusters are"),model)
-  classMembership <- predict(NewData)
-  return(classMembership)
+  set.seed(111)
+  model <- Mclust(Data,...)
+  print(paste("optimal number of clusters are",model$G))
+  if(!is.null(NewData)) {
+    classMembership <- predict(model,NewData)
+    return(classMembership)
+  }else return(model)
 }
