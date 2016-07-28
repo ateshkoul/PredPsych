@@ -5,8 +5,18 @@ ehthumbs.db
 # Folder config file
 Desktop.ini
 
+# R history file
+.Rhistory
+.Rbuildignore
+.gitignore
+
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
+
+# R folder
+.Rproj.user/
+.Rproj.user/37A37ED/
 
 # Windows Installer files
 *.cab
@@ -51,3 +61,5 @@ Temporary Items
 .Rproj.user/37A37ED/saved_source_markers
 .Rproj.user/37A37ED/sdb/prop/875D5E5C
 .Rproj.user/37A37ED/sdb/prop/INDEX
+*.Rproj.user/
+*.Rhistory

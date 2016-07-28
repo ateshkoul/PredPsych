@@ -48,15 +48,15 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
            #summary(modelF)
            plotcp(modelF)
            # plot tree
-           plot(modelF, uniform=TRUE,main="Classification Tree")
-           text(modelF, use.n=TRUE, all=TRUE, cex=.8)
+           print(plot(modelF, uniform=TRUE,main="Classification Tree"))
+           print(text(modelF, use.n=TRUE, all=TRUE, cex=.8))
            print(modelF)
            print('done')
            return(modelF)},
          
            modelNAHF = {
              library(rpart)
-             print("Generating crossvalidated Half Model Tree NO NA")
+             print("Generating crossvalidated Half Model Tree NO Mssing values")
              # remove NAs as I use a stratified cross validation (may not be necessary)
              DatNoNA <- Data[!is.na(Data[,responseCol]),]
              # Just to be sure that the response is a factor for classification
@@ -78,15 +78,15 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
               modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
               preDicNAHF <- predict(modelNAHF,testX,type='matrix')
               summary(modelNAHF)
-              plot(modelNAHF, uniform=TRUE,
-                         main="Classification Tree HF")
-              text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8)
+              print(plot(modelNAHF, uniform=TRUE,
+                         main="Classification Tree HF (without Missing)"))
+              print(text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8))
               print(modelNAHF)
               print('done')
               return(modelNAHF)},
          modelHF = {
            library(rpart)
-           print("Generating crossvalidated Half Model Tree With NA")
+           print("Generating crossvalidated Half Model Tree With Missing Values")
            # just divide as test and train if u want
             k = 2
             trainIndex <- createFolds(Data[,responseCol],list = FALSE,k=k)
@@ -95,6 +95,9 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
             modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
             preDicHF <- predict(modelHF,testX,type='matrix')
             #summary(modelHF)
+            print(plot(modelHF, uniform=TRUE,
+                 main="Classification Tree HF"))
+            print(text(modelHF, use.n=TRUE, all=TRUE, cex=.8))
             print(modelHF)
             print('done')
             return(modelHF)},
@@ -107,7 +110,7 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
            DatNoNA[,responseCol] <- factor(DatNoNA[,responseCol])
            modelCF <- ctree(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DatNoNA[,selectedCol])
            #summary(modelCF)
-           plot(modelCF)
+           print(plot(modelCF))
            print(modelCF)
            print('done')
            return(modelCF)},
