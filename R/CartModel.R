@@ -72,6 +72,7 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
               k = 2
               # use stratified cross validation instead
               # use 50% data for training
+              set.seed(111)
               trainIndex <- createFolds(DatNoNA[,responseCol],list = FALSE,k=k)
               trainX <- DatNoNA[trainIndex==1,]
               testX <- DatNoNA[!trainIndex==2,]
@@ -89,6 +90,7 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
            print("Generating crossvalidated Half Model Tree With Missing Values")
            # just divide as test and train if u want
             k = 2
+            set.seed(111)
             trainIndex <- createFolds(Data[,responseCol],list = FALSE,k=k)
             trainX <- Data[trainIndex==1,]
             testX <- Data[!trainIndex==2,]
