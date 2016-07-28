@@ -78,9 +78,9 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
               modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
               preDicNAHF <- predict(modelNAHF,testX,type='matrix')
               summary(modelNAHF)
-              print(plot(modelNAHF, uniform=TRUE,
-                         main="Classification Tree HF (without Missing)"))
-              print(text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8))
+              plot(modelNAHF, uniform=TRUE,
+                         main="Classification Tree HF (without Missing)")
+              text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8)
               print(modelNAHF)
               print('done')
               return(modelNAHF)},
@@ -95,9 +95,9 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
             modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
             preDicHF <- predict(modelHF,testX,type='matrix')
             #summary(modelHF)
-            print(plot(modelHF, uniform=TRUE,
-                 main="Classification Tree HF"))
-            print(text(modelHF, use.n=TRUE, all=TRUE, cex=.8))
+            plot(modelHF, uniform=TRUE,
+                 main="Classification Tree HF")
+            text(modelHF, use.n=TRUE, all=TRUE, cex=.8)
             print(modelHF)
             print('done')
             return(modelHF)},
