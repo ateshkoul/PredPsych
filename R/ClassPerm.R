@@ -51,17 +51,20 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
   # if your targets are not factors, make them..
   if(!(is.factor(Data[,predictorCol]))) Data[,predictorCol] <- factor(Data[,predictorCol])
   
-  set.seed(123)
+  
   print("Performing Cross Validation")
+  set.seed(111)
   # First calculate actual accuracy
-  actualAcc <- classifierFun(Data,predictorCol,selectedCols,...)
+  # Keep the seed constant in this case (we want the same accuracy)
+  actualAcc <- classifierFun(Data,predictorCol,selectedCols,SetSeed = F,...)
   # calculate permutation scores by randomly sampling targets
   chanceAcc <- 1/(length(unique(Data[,predictorCol])))
   # permutator is a simple function that randomly shuffles targets and spits out accuracies
   permutator <-function(Data,predictorCol,selectedCols){
     Data[,predictorCol] <- sample(Data[,predictorCol])
     # use silence to not print the accuracies multiple times
-    NullAcc <- classifierFun(Data,predictorCol,selectedCols,silent=TRUE,...)
+    # change the seed; otherwise the sample function above always outputs the same value
+    NullAcc <- classifierFun(Data,predictorCol,selectedCols,silent=TRUE,SetSeed = F,...)
     return(NullAcc)
   }
 
@@ -142,22 +145,30 @@ LinearDAPerm <- function(X,Y,cvType="LOTO"){
 }
 
 
-LinearSVM <- function(X,Y){
+LinearSVM <- function(Data,predictorCol,selectedCols,SetSeed = T,silent,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
   library(e1071)
   #set.seed(111)
   # defaults to 10 fold cross validation
+  selectedColNames <- names(Data)[selectedCols]
+  # get feature columns without response
+  featureColNames <- selectedColNames[-match(names(Data)[predictorCol],selectedColNames)]
+  predictorColNames <- names(Data)[predictorCol]
+  
+  Data = Data[,selectedCols]
+  Data[,predictorColNames] = factor(Data[,predictorColNames])
+  
   k = 10
   # use stratified cross validation instead
   # use 80% data for training
-  trainIndex <- createFolds(Y, list = FALSE,k = k)
+  trainIndex <- createFolds(Data[,predictorCol], list = FALSE,k = k)
   acc <- rep(NA,k)
   for (i in 1:k){
-    trainX <- X[!trainIndex==i,]
-    testX <- X[trainIndex==i,]
-    trainY <- Y[!trainIndex==i]
-    testY <- Y[trainIndex==i]
+    trainX <- Data[!trainIndex==i,featureColNames]
+    testX <- Data[trainIndex==i,featureColNames]
+    trainY <- Data[!trainIndex==i,predictorColNames]
+    testY <- Data[trainIndex==i,predictorColNames]
     model <- svm(trainX, trainY,kernel = "linear")
     # test with train data
     pred <- predict(model, testX)

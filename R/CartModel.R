@@ -38,7 +38,8 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
 
   # make it a factor anyways
   Data[,responseCol] <- factor(Data[,responseCol])
-
+  
+  
   switch(tree,
          modelF = {
            library(rpart)
@@ -62,27 +63,24 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
              # Just to be sure that the response is a factor for classification
              DatNoNA[,responseCol] <- factor(DatNoNA[,responseCol])
 
-              # optional scaling
-              # takes care if u input negative values also
-              # usedColNames <- names(Data)[selectedCol]
-              # ActualselectedCol <- usedColNames[-grep(names(Data)[responseCol],usedColNames)]
-              # DatNoNA[,ActualselectedCol] <- scale(DatNoNA[,ActualselectedCol])
-            
+
               # just divide as test and train if u want
               k = 2
               # use stratified cross validation instead
               # use 50% data for training
               set.seed(111)
               trainIndex <- createFolds(DatNoNA[,responseCol],list = FALSE,k=k)
-              trainX <- DatNoNA[trainIndex==1,]
-              testX <- DatNoNA[!trainIndex==2,]
-              modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
-              preDicNAHF <- predict(modelNAHF,testX,type='matrix')
-              summary(modelNAHF)
+              train <- DatNoNA[trainIndex==1,]
+              test <- DatNoNA[trainIndex==2,]
+              modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=train[,selectedCol],method = 'class')
+              preDicNAHF <- predict(modelNAHF,test[,featureColNames],type='vector')
+              accNAHF <- sum(1 * (preDicNAHF==test[,responseCol]))/length(preDicNAHF)
+              #summary(modelNAHF)
               plot(modelNAHF, uniform=TRUE,
                          main="Classification Tree HF (without Missing)")
               text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8)
               print(modelNAHF)
+              print(paste0("The accuracy of the model was ",signif(accNAHF,2)))
               print('done')
               return(modelNAHF)},
          modelHF = {
@@ -92,15 +90,17 @@ CartModel <- function(Data,responseCol,selectedCol,tree,...){
             k = 2
             set.seed(111)
             trainIndex <- createFolds(Data[,responseCol],list = FALSE,k=k)
-            trainX <- Data[trainIndex==1,]
-            testX <- Data[!trainIndex==2,]
-            modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainX[,selectedCol],method = 'class')
-            preDicHF <- predict(modelHF,testX,type='matrix')
+            train <- Data[trainIndex==1,]
+            test <- Data[trainIndex==2,]
+            modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=train[,selectedCol],method = 'class')
+            preDicHF <- predict(modelHF,test[,selectedCol],type='vector')
+            accHF <- sum(1 * (preDicHF==test[,responseCol]))/length(preDicHF)
             #summary(modelHF)
             plot(modelHF, uniform=TRUE,
                  main="Classification Tree HF")
             text(modelHF, use.n=TRUE, all=TRUE, cex=.8)
             print(modelHF)
+            print(paste0("The accuracy of the model was ",signif(accHF,2)))
             print('done')
             return(modelHF)},
          modelCF = {# Cluster tree

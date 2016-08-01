@@ -21,7 +21,7 @@
 #'Atesh Koul, C'MON group, Istituto Italiano di technologia
 #'
 #'\email{atesh.koul@@gmail.com}
-classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,...){
+classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,SetSeed=TRUE,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
   library(e1071)
@@ -43,6 +43,8 @@ classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,co
 
   # if predictor has missing, remove those columns
   if(sum(is.na(Data[,predictorColNames]))>0) Data <- Data[!is.na(Data[,predictorColNames]),]
+  # set seed; skip if explicitly is made false (e.g. in Permutation Testing)
+  if(SetSeed)  set.seed(111)
 
   if(tune) {
     folds = 3
