@@ -11,10 +11,16 @@
 #' @return Returns \code{actualAcc} of the classification analysis,
 #'  \code{p-value} from permutation testing, \code{nullAcc} distribution of the permutation \code{figure} containing null distribution
 #'
-#'@author
-#'Atesh Koul, C'MON group, Istituto Italiano di technologia
+#'@examples
+#'# perform a permutation testing for 10% of the kinematics movement data
+#'PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
 #'
-#'\email{atesh.koul@@gmail.com}
+#'
+#'
+#'@author
+#'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
+#'
+#'\email{atesh.koul@@iit.it}
 ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,...){
   # classifierFun is a function that the use inputs to calculate the permutation scores
   # The form of this function should return accuracy as a single value.
@@ -56,7 +62,7 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
   set.seed(111)
   # First calculate actual accuracy
   # Keep the seed constant in this case (we want the same accuracy)
-  actualAcc <- classifierFun(Data,predictorCol,selectedCols,SetSeed = F,...)
+  actualAcc <- classifierFun(Data,predictorCol,selectedCols,SetSeed = FALSE,...)
   # calculate permutation scores by randomly sampling targets
   chanceAcc <- 1/(length(unique(Data[,predictorCol])))
   # permutator is a simple function that randomly shuffles targets and spits out accuracies
@@ -64,7 +70,7 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
     Data[,predictorCol] <- sample(Data[,predictorCol])
     # use silence to not print the accuracies multiple times
     # change the seed; otherwise the sample function above always outputs the same value
-    NullAcc <- classifierFun(Data,predictorCol,selectedCols,silent=TRUE,SetSeed = F,...)
+    NullAcc <- classifierFun(Data,predictorCol,selectedCols,silent=TRUE,SetSeed = FALSE,...)
     return(NullAcc)
   }
 
@@ -79,7 +85,7 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
   #set.seed(111)
 
   distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(Data,predictorCol,selectedCols),.progress = progress_time())))
-  p_value = sum(distNull$nullAcc >= actualAcc)
+  p_value = sum(distNull$nullAcc >= actualAcc)/nSims
 
   # plot with automatically adjusting the height of the y-axis using 1 sd of the data
   plot <- ggplot(distNull,aes(nullAcc))+
@@ -115,34 +121,34 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
 }
 
 
-LinearDAPerm <- function(X,Y,cvType="LOTO"){
-  #simple function to perform linear discriminant analysis
-  # DOn't set seed here as it goes back to the permutator function and constraints the sample 
-  # to set the same value for Y over and over again.
-  library(MASS)
-  library(caret)
-  if(cvType=="LOTO"){
-    index <- createFolds(Y,k=length(Y),list=FALSE)
-    acc <- vector()
-    
-    for(i in seq_along(index)){
-      XTrain <- X[-i,]
-      YTrain <- Y[-i]
-      XTest <-  X[i,]
-      YTest <-  Y[i]
-      fit <- lda(XTrain,grouping = YTrain)
-      predicted <- predict(fit,newdata=XTest)
-      #print(table(predicted$class,DataTest[,predictorCol]))
-      acc[i] <- sum(1 * (predicted$class==YTest))/length(predicted$class)
-    }
-    Acc <- mean(acc)
-    #print(paste("The accuracy of discrimination was",signif(Acc,2)))
-  }  
-  
-  return(Acc)
-  
-  
-}
+# LinearDAPerm <- function(X,Y,cvType="LOTO"){
+#   #simple function to perform linear discriminant analysis
+#   # DOn't set seed here as it goes back to the permutator function and constraints the sample 
+#   # to set the same value for Y over and over again.
+#   library(MASS)
+#   library(caret)
+#   if(cvType=="LOTO"){
+#     index <- createFolds(Y,k=length(Y),list=FALSE)
+#     acc <- vector()
+#     
+#     for(i in seq_along(index)){
+#       XTrain <- X[-i,]
+#       YTrain <- Y[-i]
+#       XTest <-  X[i,]
+#       YTest <-  Y[i]
+#       fit <- lda(XTrain,grouping = YTrain)
+#       predicted <- predict(fit,newdata=XTest)
+#       #print(table(predicted$class,DataTest[,predictorCol]))
+#       acc[i] <- sum(1 * (predicted$class==YTest))/length(predicted$class)
+#     }
+#     Acc <- mean(acc)
+#     #print(paste("The accuracy of discrimination was",signif(Acc,2)))
+#   }  
+#   
+#   return(Acc)
+#   
+#   
+# }
 
 
 LinearSVM <- function(Data,predictorCol,selectedCols,SetSeed = T,silent,...){

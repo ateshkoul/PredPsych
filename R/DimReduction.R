@@ -8,10 +8,13 @@
 #'          
 #' @return  Data frame with \code{Results}
 #'
+#'@examples
+#'# reducing dimension of Grip aperture from 10 to 2
+#'GripAperture <- DimensionRed(KinData,selectedCols = 12:21,outcome = KinData[,"Object.Size"],plot = TRUE)
 #'@author
-#'Atesh Koul, C'MON group, Istituto Italiano di technologia
+#'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
-#'\email{atesh.koul@@gmail.com}
+#'\email{atesh.koul@@iit.it}
 DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,...){
   # if nothing specific is provided, default to all the columns
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
@@ -30,7 +33,7 @@ DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,..
              plotData <- data.frame(MDS,outcome = factor(outcome))
              p <- ggplot(plotData,aes(x=X1,y=X2,col=outcome))+
                geom_point()+theme_bw()+scale_color_grey(end = 0.7)+
-               theme(panel.grid = element_blank())+guides(col=FALSE)+stat_ellipse(type = 'norm')
+               theme(panel.grid = element_blank())+stat_ellipse(type = 'norm')#+guides(col=FALSE)
              print(p)
            }
            

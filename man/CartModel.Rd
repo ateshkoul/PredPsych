@@ -28,6 +28,13 @@ Cart model result for the input tree \code{Results}
 \description{
 A simple function to create Classification and Regression Trees
 }
+\examples{
+# generate a cart model for 10\% of the data with cross-validation
+CaRTModel <- CartModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],responseCol=1,tree='modelHF')
+
+
+
+}
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia
 

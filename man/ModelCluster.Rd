@@ -4,12 +4,14 @@
 \alias{ModelCluster}
 \title{Model based Clustering}
 \usage{
-ModelCluster(Data, NewData = NULL, ...)
+ModelCluster(Data, NewData = NULL, G, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
 
 \item{NewData}{(optional) (dataframe) New Data frame for which the class membership is requested}
+
+\item{G}{(optional) (numeric) No. of components to verify}
 }
 \value{
 \code{class membership} of the clustered \code{NewData}
@@ -17,6 +19,10 @@ ModelCluster(Data, NewData = NULL, ...)
 \description{
 A simple function to perform Model based cluster Analysis
 :
+}
+\examples{
+# clustering kinematics data at 10\% of movement
+cluster_time <- ModelCluster(KinData[,c(2,12,22,32,42,52,62,72,82,92,102,112)],G=1:12)
 }
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia

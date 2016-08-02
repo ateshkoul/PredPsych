@@ -5,71 +5,74 @@
 #' @param Data                 (dataframe) Data dataframe
 #' @param predictorCol         (numeric)  column number that contains the variable to be predicted
 #' @param selectedCols         (optional) (numeric)  all the columns of data that would be used either as predictor or as feature
-#' @param cvType               (optional) (string) Cross validation type.
+#' @param CV                   (optional) (logical) perform Cross validation of training dataset? 
+#' If TRUE, posterior probabilites are present with the model
 #' @param cvFraction           (optional) (numeric) Fraction of data to keep for training data
 #' @param extendedResults      (optional) (logical) Return extended results with model?
-#' @return Depending upon \code{extendedResults} output \code{accuracy} of discrimination (\code{extendedResults} FALSE) or 
-#' \code{Acc} Accuracy of discrimination and \code{fitLDA} the fit cross-validated LDA model
+#' @return Depending upon \code{extendedResults}. \code{extendedResults} FALSE =  \code{Acc} of discrimination () \code{extendedResults} TRUE 
+#' \code{Acc} Accuracy of discrimination and \code{fitLDA} the fit cross-validated LDA model. If \code{CV} = TRUE , 
+#' Posterior probabilities are generated and stored in the model
+#'
 #'  
+#' @examples
+#' # simple model with data partition of 80% and no extended results 
+#' LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#' #outout
+#' #       Predicted
+#' #Actual  1  2
+#' #1 51 32
+#' #2 40 45
+#' [1] "The accuracy of discrimination was 0.57"
+#'
+#' LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+#' CV=FALSE,cvFraction = 0.8,extendedResults = T)
+#'
 #'
 #'@author
-#'Atesh Koul, C'MON group, Istituto Italiano di technologia
+#'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
-#'\email{atesh.koul@@gmail.com}
-LinearDA <- function(Data,predictorCol,selectedCols,cvType="createDataPartition",cvFraction=0.8,extendedResults = FALSE,posterior=FALSE,...){
+#'\email{atesh.koul@@iit.it}
+LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,...){
   #simple function to perform linear discriminant analysis
   library(MASS)
   library(caret)
-  set.seed(111)
-  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
-  if(missing(cvType))  cvType = "createDataPartition"
+  #if(SetSeed)  set.seed(111)
   
+  # set some checks
+  # you haven't given any fraction for test, can't create data partition and get an accuracy
+  # Perhaps, you have missed something?
+  if(cvFraction==1 & CV == FALSE) stop("No fraction for train /test split") 
+  if(CV == TRUE & extendedResults==F) warning("No output requested. Please use extendedResults = T to output the model")
+  
+  
+  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
   featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]
 
   Data[,predictorCol] <- factor(Data[,predictorCol])
-  if (cvType=="createDataPartition"){
+  # if (cvType=="createDataPartition"){
     
     # cross validate with 80% data in train set
-    index <- createDataPartition(Data[,predictorCol],p=cvFraction,times=1)
+  index <- createDataPartition(Data[,predictorCol],p=cvFraction,times=1)
+  
+  DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]
+  DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
+  
+  fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol],CV = CV,...)
+  # if CV = 
+  if(!CV){
+    predicted <- predict(fit,newdata=DataTest[,featureColNames])
+    print(table(DataTest[,predictorCol],predicted$class,dnn = c("Actual","Predicted")))
+    Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
+    print(paste("The accuracy of discrimination was",signif(Acc,2)))
     
-    DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]
-    DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
+  } else Acc <- NULL
     
-    if(!posterior) {
-      fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol],...)
-      predicted <- predict(fit,newdata=DataTest[,featureColNames])
-      
-      # print the confusion matrix
-      print(table(DataTest[,predictorCol],predicted$class,dnn = c("Actual","Predicted")))
-      Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
-      
-      print(paste("The accuracy of discrimination was",signif(Acc,2)))
-    }else {
-      fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol],CV = TRUE)
-      Acc <- NULL
-    }
-    
-  }else if(cvType=="LOTO"){
-    index <- createFolds(Data[,predictorCol],k=nrow(Data),list=FALSE)
-    acc <- vector()
-    for(i in seq_along(index)){
-      DataTrain <- Data[-i,]
-      DataTest <-  Data[i,]
-      fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol],...)
-      #predicted <- predict(fit,newdata=DataTest[,featureColNames])
-      #print(table(predicted$class,DataTest[,predictorCol]))
-      #acc[i] <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
-    }
-    #Acc <- mean(acc)
-    #print(paste("The accuracy of discrimination was",signif(Acc,2)))
-  }  
+    # print the confusion matrix
   
   if(extendedResults){
-      #ResultsLDA <- list(fitLDA = fit,Acc = Acc)
-      ResultsLDA <- list(fitLDA = fit)
+      ResultsLDA <- list(fitLDA = fit,Acc = Acc)
       return(ResultsLDA)
     }else return(Acc)
-
 }

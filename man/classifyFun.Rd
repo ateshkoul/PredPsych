@@ -6,7 +6,7 @@
 \usage{
 classifyFun(Data, predictorCol, selectedCols, ranges = NULL, tune = FALSE,
   cost = 1, gamma = 0.5, classifierName = "svm",
-  genclassifier = Classifier.svm, silent = FALSE, ...)
+  genclassifier = Classifier.svm, silent = FALSE, SetSeed = TRUE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) dataframe of the data}
@@ -32,6 +32,16 @@ Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
 }
 \description{
 function for performing generic classification Analysis
+}
+\examples{
+#classification analysis with SVM
+Results <- classifyFun(Data = KinData,predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+# output
+# [1] "Begining k-fold Classification"
+# [1] "Mean CV Accuracy 0.66"
+# [1] "Mean Test Accuracy 0.62"
+
+
 }
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia

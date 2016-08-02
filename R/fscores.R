@@ -6,11 +6,14 @@
 #' @param featSel     (numeric) column with different classes
 #' @param featureCol  (numeric) all the columns that contain features
 #' @return named numeric \code{f-scores} 
+#' @examples 
+#' # calculate f-scores for 10% of movement
+#' fscore(KinData,featSep = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
 #'
 #'@author
-#'Atesh Koul, C'MON group, Istituto Italiano di technologia
+#'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
-#'\email{atesh.koul@@gmail.com}
+#'\email{atesh.koul@@iit.it}
 fscore <- function(Data,featSep,featureCol){
   tr <- function(m) return(sum(diag(m)))
   # separate positive and negative feature sets

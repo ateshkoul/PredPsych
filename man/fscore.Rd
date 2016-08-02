@@ -19,6 +19,11 @@ named numeric \code{f-scores}
 \description{
 A simple function to generate F-scores (Fisher scores) for ranking features
 }
+\examples{
+# calculate f-scores for 10\% of movement
+fscore(KinData,featSep = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
+
+}
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia
 

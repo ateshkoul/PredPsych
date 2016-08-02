@@ -4,7 +4,8 @@
 \alias{LinearDA}
 \title{Cross-validated Linear Discriminant Analysis}
 \usage{
-LinearDA(Data, predictorCol, selectedCols, cvType = "createDataPartition")
+LinearDA(Data, predictorCol, selectedCols, CV = FALSE, cvFraction = 0.8,
+  extendedResults = FALSE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
@@ -13,13 +14,35 @@ LinearDA(Data, predictorCol, selectedCols, cvType = "createDataPartition")
 
 \item{selectedCols}{(optional) (numeric)  all the columns of data that would be used either as predictor or as feature}
 
-\item{cvType}{(optional) (string) Cross validation type.}
+\item{CV}{(optional) (logical) perform Cross validation of training dataset? 
+If TRUE, posterior probabilites are present with the model}
+
+\item{cvFraction}{(optional) (numeric) Fraction of data to keep for training data}
+
+\item{extendedResults}{(optional) (logical) Return extended results with model?}
 }
 \value{
-\code{accuracy} of discrimination
+Depending upon \code{extendedResults}. \code{extendedResults} FALSE =  \code{Acc} of discrimination () \code{extendedResults} TRUE 
+\code{Acc} Accuracy of discrimination and \code{fitLDA} the fit cross-validated LDA model. If \code{CV} = TRUE , 
+Posterior probabilities are generated and stored in the model
 }
 \description{
 A simple function to perform cross-validated Linear Discriminant Analysis
+}
+\examples{
+# simple model with data partition of 80\% and no extended results 
+LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#outout
+#       Predicted
+#Actual  1  2
+#1 51 32
+#2 40 45
+[1] "The accuracy of discrimination was 0.57"
+
+LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+CV=FALSE,cvFraction = 0.8,extendedResults = T)
+
+
 }
 \author{
 Atesh Koul, C'MON group, Istituto Italiano di technologia
