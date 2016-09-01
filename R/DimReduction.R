@@ -24,22 +24,24 @@ DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,..
   switch(method,
          MDS = {
            DistanceMatrix <- dist(Data[,selectedCols])
-           MDS <- cmdscale(DistanceMatrix,...)
+           multiDimScale <- cmdscale(DistanceMatrix,...)
            if(plot & any(!is.na(outcome))) {
-             # plot(MDS,type='n')
-             # text(MDS[,1],MDS[,2],labels=names(Data[,selectedCols]))
              # update data for plotting
              library(ggplot2)
-             plotData <- data.frame(MDS,outcome = factor(outcome))
+             plotData <- data.frame(multiDimScale,outcome = factor(outcome))
              p <- ggplot(plotData,aes(x=X1,y=X2,col=outcome))+
                geom_point()+theme_bw()+scale_color_grey(end = 0.7)+
                theme(panel.grid = element_blank())+stat_ellipse(type = 'norm')#+guides(col=FALSE)
              print(p)
            }
            
-           return(MDS)
+           return(multiDimScale)
+         },PCA = {
+           principal <- princomp(Data[,selectedCols],...)
+           print(summary(principal)) # print variance accounted for 
+           if(plot) plot(principal,type="lines") # scree plot 
+           return(principal)
          }
-         
          
          )
   
