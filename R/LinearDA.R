@@ -32,11 +32,11 @@
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
-LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,...){
+LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,...){
   #simple function to perform linear discriminant analysis
   library(MASS)
   library(caret)
-  #if(SetSeed)  set.seed(111)
+  if(SetSeed)  set.seed(111)
   
   # set some checks
   # you haven't given any fraction for test, can't create data partition and get an accuracy
