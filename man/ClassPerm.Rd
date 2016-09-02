@@ -32,8 +32,8 @@ PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,selectedCols = c
 
 }
 \author{
-Atesh Koul, C'MON group, Istituto Italiano di technologia
+Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
-\email{atesh.koul@gmail.com}
+\email{atesh.koul@iit.it}
 }
 

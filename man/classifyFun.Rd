@@ -44,8 +44,8 @@ Results <- classifyFun(Data = KinData,predictorCol = 1,selectedCols = c(1,2,12,2
 
 }
 \author{
-Atesh Koul, C'MON group, Istituto Italiano di technologia
+Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
-\email{atesh.koul@gmail.com}
+\email{atesh.koul@iit.it}
 }
 

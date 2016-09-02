@@ -5,7 +5,7 @@
 \title{Cross-validated Linear Discriminant Analysis}
 \usage{
 LinearDA(Data, predictorCol, selectedCols, CV = FALSE, cvFraction = 0.8,
-  extendedResults = FALSE, ...)
+  extendedResults = FALSE, SetSeed = TRUE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
@@ -45,8 +45,8 @@ CV=FALSE,cvFraction = 0.8,extendedResults = T)
 
 }
 \author{
-Atesh Koul, C'MON group, Istituto Italiano di technologia
+Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
-\email{atesh.koul@gmail.com}
+\email{atesh.koul@iit.it}
 }
 

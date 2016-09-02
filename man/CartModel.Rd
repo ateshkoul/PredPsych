@@ -36,8 +36,8 @@ CaRTModel <- CartModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)
 
 }
 \author{
-Atesh Koul, C'MON group, Istituto Italiano di technologia
+Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
-\email{atesh.koul@gmail.com}
+\email{atesh.koul@iit.it}
 }
 

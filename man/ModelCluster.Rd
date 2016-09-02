@@ -25,8 +25,8 @@ A simple function to perform Model based cluster Analysis
 cluster_time <- ModelCluster(KinData[,c(2,12,22,32,42,52,62,72,82,92,102,112)],G=1:12)
 }
 \author{
-Atesh Koul, C'MON group, Istituto Italiano di technologia
+Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
-\email{atesh.koul@gmail.com}
+\email{atesh.koul@iit.it}
 }
 

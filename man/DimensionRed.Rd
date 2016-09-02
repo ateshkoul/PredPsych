@@ -23,8 +23,8 @@ A simple function to perform dimensionality reduction
 GripAperture <- DimensionRed(KinData,selectedCols = 12:21,outcome = KinData[,"Object.Size"],plot = TRUE)
 }
 \author{
-Atesh Koul, C'MON group, Istituto Italiano di technologia
+Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
-\email{atesh.koul@gmail.com}
+\email{atesh.koul@iit.it}
 }
 
