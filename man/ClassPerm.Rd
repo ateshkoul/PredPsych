@@ -33,7 +33,8 @@ shuffling the labels of the dataset (i.e. randomly shuffling classes/conditions 
 }
 \examples{
 # perform a permutation testing for 10\% of the kinematics movement data
-PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
+PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,
+ selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
 
 
 

@@ -32,16 +32,17 @@
 #' #Actual  1  2
 #' #1 51 32
 #' #2 40 45
-#' [1] "The accuracy of discrimination was 0.57"
+#' #"The accuracy of discrimination was 0.57"
 #'
 #' LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-#' CV=FALSE,cvFraction = 0.8,extendedResults = T)
+#' CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
 #'
 #'
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
+#' @export
 LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,...){
   #simple function to perform linear discriminant analysis
   library(MASS)
@@ -52,7 +53,7 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
   # you haven't given any fraction for test, can't create data partition and get an accuracy
   # Perhaps, you have missed something?
   if(cvFraction==1 & CV == FALSE) stop("No fraction for train /test split") 
-  if(CV == TRUE & extendedResults==F) warning("No output requested. Please use extendedResults = T to output the model")
+  if(CV == TRUE & extendedResults==F) warning("No output requested. Please use extendedResults = TRUE to output the model")
   
   
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))

@@ -23,6 +23,7 @@
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
+#' @export
 ModelCluster <- function(Data,NewData=NULL,G,...){
   library(mclust)
   set.seed(111)

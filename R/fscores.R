@@ -21,6 +21,7 @@
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
+#' @export
 fscore <- function(Data,featSep,featureCol){
   tr <- function(m) return(sum(diag(m)))
   # separate positive and negative feature sets

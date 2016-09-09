@@ -36,6 +36,7 @@
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
+#' @export
 classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,SetSeed=TRUE,...){
   # a simplistic k-fold crossvalidation
   # For cross validation

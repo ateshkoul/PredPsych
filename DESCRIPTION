@@ -8,10 +8,18 @@ Maintainer: <atesh.koul@iit.it>
 Description: The functions for Predictive approaches in Psychology
 License: GPL-V3
 LazyData: TRUE
-Depends:
+Depends: 
     R (>= 3.1.0)
-Imports:
+Imports: 
     plyr,
     ggplot2,
-    openxlsx
+    openxlsx,
+    caret,
+    rpart,
+    plotly,
+    e1071,
+    mclust
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

@@ -24,6 +24,7 @@
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
+#' @export
 DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,...){
   # if nothing specific is provided, default to all the columns
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))

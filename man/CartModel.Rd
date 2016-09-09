@@ -29,16 +29,16 @@ Cart model result for the input tree \code{Results}
 A simple function to create Classification and Regression Trees
 }
 \details{
-The function implements the CaRT modelling. CaRT models fall under the general ‘Tree based methods’ involving generation of a recursive binary tree 
+The function implements the CaRT modelling. CaRT models fall under the general 'Tree based methods' involving generation of a recursive binary tree 
 (Hastie et al., 2009). In terms of input, Cart models can handle both continuous and categorical variables 
-as well as missing data. From the input data, Cart models build a set of logical ‘if ..then’ rules that permit
+as well as missing data. From the input data, Cart models build a set of logical 'if ..then' rules that permit
 accurate prediction of the input cases. 
 
 Unlike regression methods like GLMs,  CaRT models are more flexible and can model nonlinear interactions.
 }
 \examples{
 # generate a cart model for 10\% of the data with cross-validation
-CaRTModel <- CartModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],responseCol=1,tree='modelHF')
+model <- CartModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],responseCol=1,tree='modelHF')
 
 
 

@@ -45,10 +45,10 @@ LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,2
 #Actual  1  2
 #1 51 32
 #2 40 45
-[1] "The accuracy of discrimination was 0.57"
+#"The accuracy of discrimination was 0.57"
 
 LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-CV=FALSE,cvFraction = 0.8,extendedResults = T)
+CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
 
 
 }
