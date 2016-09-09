@@ -8,6 +8,13 @@
 #' @param classifierFun   (optional) (function) classifier function
 #' @param nSims           (optional) (numeric) number of simulations
 #'
+#' @details 
+#' The function implements Permutation tests for classification.
+#' Permutation tests are a set of non-parametric methods for hypothesis testing without assuming 
+#' a particular distribution (Good, 2005). In case of classification analysis, this requires 
+#' shuffling the labels of the dataset (i.e. randomly shuffling classes/conditions between observations)
+#'   and calculating accuracies obtained.
+#'
 #' @return Returns \code{actualAcc} of the classification analysis,
 #'  \code{p-value} from permutation testing, \code{nullAcc} distribution of the permutation \code{figure} containing null distribution
 #'

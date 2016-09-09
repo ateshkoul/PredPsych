@@ -6,6 +6,14 @@
 #' @param NewData (optional) (dataframe) New Data frame for which the class membership is requested
 #' @param G       (optional) (numeric) No. of components to verify
 #'
+#' @details 
+#' The function implements Model based clustering in predictive framework. Model based clustering approaches provide a
+#' structured way of choosing number of clusters (C. Fraley & Raftery, 1998). 
+#' Data are considered to be generated from a set of Gaussian distributions (components or clusters) 
+#' i.e. as a mixture of these components (mixture models). Instead of using heuristics, model based 
+#' clustering approximates Bayes factor (utilizing Bayesian information Criterion) to determine the model 
+#' with the highest evidence (as provided by the data).
+#'
 ##'@return \code{class membership} of the clustered \code{NewData} 
 #'
 #'@examples

@@ -18,6 +18,14 @@ Data frame with \code{Results}
 \description{
 A simple function to perform dimensionality reduction
 }
+\details{
+Dimensionality Reduction is the process of reducing the dimensions of the dataset. 
+Multivariate data, even though are useful in getting an overall understanding of the underlying phenomena,
+do not permit easy interpretability. Moreover, variables in such data often are correlated with each other
+.For these reasons, it might be imperative to reduce the dimensions of the data. 
+Various models have been developed for such dimensionality reduction. Of these, MDS and PCA has been 
+demonstrated in the current implementation.
+}
 \examples{
 # reducing dimension of Grip aperture from 10 to 2
 GripAperture <- DimensionRed(KinData,selectedCols = 12:21,outcome = KinData[,"Object.Size"],plot = TRUE)

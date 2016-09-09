@@ -19,6 +19,11 @@ named numeric \code{f-scores}
 \description{
 A simple function to generate F-scores (Fisher scores) for ranking features
 }
+\details{
+The function implements F-score for feature selection.
+F-score provides a measure of how well a single feature at a time can discriminate between different 
+classes. The higher the F-score, the better the discriminatory power of that feature
+}
 \examples{
 # calculate f-scores for 10\% of movement
 fscore(KinData,featSep = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))

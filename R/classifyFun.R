@@ -11,7 +11,16 @@
 #' @param tune            (optional) (logical) whether tuning of svm parameters should be performed or not
 #' @param cost            (optional) (numeric) regularization parameter of svm
 #' @param gamma           (optional) (numeric)  rbf kernel parameter
-#'
+#' 
+#' @details 
+#' This function implents Classification Analysis. 
+#' Classification Analysis is a supervised machine learning approach that attempts to identify 
+#' holistic patters in the data and assign to it classes (classification). Given a set of features, 
+#' a classification analysis automatically learns intrinsic patterns in the data to be able to predict 
+#' respective classes. If the data features are informative about the classes, a high classification score
+#' would be achieved. 
+#' 
+#' 
 #' @return Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
 #'
 #'@examples

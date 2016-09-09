@@ -5,6 +5,13 @@
 ##'@param Data        (dataframe) Data dataframe
 #' @param featSel     (numeric) column with different classes
 #' @param featureCol  (numeric) all the columns that contain features
+#' 
+#' @details 
+#' The function implements F-score for feature selection.
+#' F-score provides a measure of how well a single feature at a time can discriminate between different 
+#' classes. The higher the F-score, the better the discriminatory power of that feature
+#' 
+#' 
 #' @return named numeric \code{f-scores} 
 #' @examples 
 #' # calculate f-scores for 10% of movement

@@ -29,6 +29,14 @@ Posterior probabilities are generated and stored in the model
 \description{
 A simple function to perform cross-validated Linear Discriminant Analysis
 }
+\details{
+The function implements Linear Disciminant Analysis, a simple algorithm for classification based analyses
+.LDA builds a model composed of a number of discriminant functions based on linear combinations of 
+data features that provide the best discrimination between two or more conditions/classes. 
+The aim of the statistical analysis in LDA is thus to combine the data features scores in a way that 
+a single new composite variable, the discriminant function, is produced (for details see Fisher, 1936;
+ Rao, 1948)).
+}
 \examples{
 # simple model with data partition of 80\% and no extended results 
 LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))

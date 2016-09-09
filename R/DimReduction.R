@@ -5,7 +5,16 @@
 #' 
 #' @param Data         (dataframe) a data frame with variable/feature columns
 #' @param selectedCol  (optional)(numeric) which columns should be treated as data(features/columns) (defaults to all columns)
-#'          
+#' 
+#' @details 
+#' Dimensionality Reduction is the process of reducing the dimensions of the dataset. 
+#' Multivariate data, even though are useful in getting an overall understanding of the underlying phenomena,
+#' do not permit easy interpretability. Moreover, variables in such data often are correlated with each other
+#' .For these reasons, it might be imperative to reduce the dimensions of the data. 
+#' Various models have been developed for such dimensionality reduction. Of these, MDS and PCA has been 
+#' demonstrated in the current implementation.
+#' 
+#'            
 #' @return  Data frame with \code{Results}
 #'
 #'@examples

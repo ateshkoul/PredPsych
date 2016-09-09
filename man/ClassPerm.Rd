@@ -24,6 +24,13 @@ Returns \code{actualAcc} of the classification analysis,
 \description{
 simple function to create permutation testing of a classifier
 }
+\details{
+The function implements Permutation tests for classification.
+Permutation tests are a set of non-parametric methods for hypothesis testing without assuming 
+a particular distribution (Good, 2005). In case of classification analysis, this requires 
+shuffling the labels of the dataset (i.e. randomly shuffling classes/conditions between observations)
+  and calculating accuracies obtained.
+}
 \examples{
 # perform a permutation testing for 10\% of the kinematics movement data
 PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)

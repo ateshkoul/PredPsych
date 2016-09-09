@@ -33,6 +33,14 @@ Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
 \description{
 function for performing generic classification Analysis
 }
+\details{
+This function implents Classification Analysis. 
+Classification Analysis is a supervised machine learning approach that attempts to identify 
+holistic patters in the data and assign to it classes (classification). Given a set of features, 
+a classification analysis automatically learns intrinsic patterns in the data to be able to predict 
+respective classes. If the data features are informative about the classes, a high classification score
+would be achieved.
+}
 \examples{
 #classification analysis with SVM
 Results <- classifyFun(Data = KinData,predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))

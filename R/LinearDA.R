@@ -9,6 +9,16 @@
 #' If TRUE, posterior probabilites are present with the model
 #' @param cvFraction           (optional) (numeric) Fraction of data to keep for training data
 #' @param extendedResults      (optional) (logical) Return extended results with model?
+#' 
+#' @details 
+#' The function implements Linear Disciminant Analysis, a simple algorithm for classification based analyses
+#' .LDA builds a model composed of a number of discriminant functions based on linear combinations of 
+#' data features that provide the best discrimination between two or more conditions/classes. 
+#' The aim of the statistical analysis in LDA is thus to combine the data features scores in a way that 
+#' a single new composite variable, the discriminant function, is produced (for details see Fisher, 1936;
+#'  Rao, 1948)). 
+#' 
+#' 
 #' @return Depending upon \code{extendedResults}. \code{extendedResults} FALSE =  \code{Acc} of discrimination () \code{extendedResults} TRUE 
 #' \code{Acc} Accuracy of discrimination and \code{fitLDA} the fit cross-validated LDA model. If \code{CV} = TRUE , 
 #' Posterior probabilities are generated and stored in the model

@@ -14,7 +14,14 @@
 #'      \item modelCF =   Conditional inference framework Tree;
 #'      \item modelRF =   Random Forest Tree;    
 #'      }
-#'          
+#' @details 
+#' The function implements the CaRT modelling. CaRT models fall under the general ‘Tree based methods’ involving generation of a recursive binary tree 
+#' (Hastie et al., 2009). In terms of input, Cart models can handle both continuous and categorical variables 
+#' as well as missing data. From the input data, Cart models build a set of logical ‘if ..then’ rules that permit
+#' accurate prediction of the input cases. 
+#' 
+#' Unlike regression methods like GLMs,  CaRT models are more flexible and can model nonlinear interactions.           
+#' 
 #' @return  Cart model result for the input tree \code{Results}  
 #' @examples
 #' # generate a cart model for 10% of the data with cross-validation
