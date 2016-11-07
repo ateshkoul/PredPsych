@@ -74,16 +74,18 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
   # if CV = 
   if(!CV){
     predicted <- predict(fit,newdata=DataTest[,featureColNames])
-    print(table(DataTest[,predictorCol],predicted$class,dnn = c("Actual","Predicted")))
+    truth <- DataTest[,predictorCol]
+    fit <- list(fit = fit,TestTruth = truth, TestPredicted = predicted)
+    print(table(truth,predicted$class,dnn = c("Actual","Predicted")))
     Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
     print(paste("The accuracy of discrimination was",signif(Acc,2)))
-    
-  } else Acc <- NULL
-    
     # print the confusion matrix
+    confusionMatrix(table(truth,predicted$class))
+  } else Acc <- NULL
   
   if(extendedResults){
       ResultsLDA <- list(fitLDA = fit,Acc = Acc)
       return(ResultsLDA)
     }else return(Acc)
+
 }
