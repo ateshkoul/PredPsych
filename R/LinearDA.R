@@ -52,7 +52,7 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
   # set some checks
   # you haven't given any fraction for test, can't create data partition and get an accuracy
   # Perhaps, you have missed something?
-  if(cvFraction==1 & CV == FALSE) stop("No fraction for train /test split") 
+  if(cvFraction==1 & CV == FALSE) warning("No fraction for train /test split") 
   if(CV == TRUE & extendedResults==F) warning("No output requested. Please use extendedResults = TRUE to output the model")
   
   
