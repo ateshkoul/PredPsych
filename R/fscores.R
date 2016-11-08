@@ -3,7 +3,7 @@
 #' A simple function to generate F-scores (Fisher scores) for ranking features
 #' 
 ##'@param Data        (dataframe) Data dataframe
-#' @param featSel     (numeric) column with different classes
+#' @param featSep     (numeric) column with different classes
 #' @param featureCol  (numeric) all the columns that contain features
 #' 
 #' @details 
