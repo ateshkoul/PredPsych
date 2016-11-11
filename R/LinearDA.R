@@ -43,7 +43,7 @@
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,...){
+LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,cvType="createDataPartition",k=10,...){
   #simple function to perform linear discriminant analysis
   library(MASS)
   library(caret)
@@ -60,15 +60,23 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
   featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]
-
-  Data[,predictorCol] <- factor(Data[,predictorCol])
-  # if (cvType=="createDataPartition"){
-    
-    # cross validate with 80% data in train set
-  index <- createDataPartition(Data[,predictorCol],p=cvFraction,times=1)
   
-  DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]
-  DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
+  Data[,predictorCol] <- factor(Data[,predictorCol])
+  switch(cvType,
+         createDataPartition = {
+           # cross validate with 80% data in train set
+           index <- createDataPartition(Data[,predictorCol],p=cvFraction,times=1)
+           DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]
+           DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
+           cat("Proportion of Test/Train Data was : ",nrow(DataTest)/nrow(DataTrain),"\n")
+         },
+         Folds = {
+           index <- createFolds(Data$L1,k,list = F)
+           DataTrain <- Data[index %in% c(1:k-1),]
+           DataTest <- Data[index %in% k,]
+           cat("Proportion of Test/Train Data was : ",nrow(DataTest)/nrow(DataTrain),"\n")
+         }
+  )
   
   fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol],CV = CV,...)
   # if CV = 
@@ -84,8 +92,8 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
   } else Acc <- NULL
   
   if(extendedResults){
-      ResultsLDA <- list(fitLDA = fit,Acc = Acc)
-      return(ResultsLDA)
-    }else return(Acc)
-
+    ResultsLDA <- list(fitLDA = fit,Acc = Acc)
+    return(ResultsLDA)
+  }else return(Acc)
+  
 }
