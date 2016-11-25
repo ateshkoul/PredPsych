@@ -89,14 +89,24 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
               modelNAHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=train[,selectedCols],method = 'class')
               preDicNAHF <- predict(modelNAHF,test[,featureColNames],type='vector')
               accNAHF <- sum(1 * (preDicNAHF==test[,classCol]))/length(preDicNAHF)
-              #summary(modelNAHF)
-              plot(modelNAHF, uniform=TRUE,
-                         main="Classification Tree HF (without Missing)")
-              text(modelNAHF, use.n=TRUE, all=TRUE, cex=.8)
-              print(modelNAHF)
+              
+              
+              cp = modelNAHF$cptable[which( modelNAHF$cptable[,'xerror']==min(modelNAHF$cptable[,'xerror'])),'CP']
+              prunedModelNAHF <- prune(modelNAHF,cp=cp)
+              
+              plot(prunedModelNAHF, uniform=TRUE,
+                   main="Pruned Classification Tree HF (without Missing)")
+              text(prunedModelNAHF, use.n=TRUE, all=TRUE, cex=.8)
+              print(prunedModelNAHF)
+              
+              #summary(modelHF)
+              # plot(modelHF, uniform=TRUE,
+              #      main="Classification Tree HF")
+              # text(modelHF, use.n=TRUE, all=TRUE, cex=.8)
+              # print(modelHF)
               print(paste0("The accuracy of the model was ",signif(accNAHF,2)))
               print('done')
-              return(modelNAHF)},
+              return(prunedModelNAHF)},
          CARTHF = {
            library(rpart)
            print("Generating crossvalidated Half Model Tree With Missing Values")
@@ -109,14 +119,24 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
             modelHF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=train[,selectedCols],method = 'class')
             preDicHF <- predict(modelHF,test[,selectedCols],type='vector')
             accHF <- sum(1 * (preDicHF==test[,classCol]))/length(preDicHF)
+            
+            #prune the model for the one with min crossvalidation error
+            cp = modelHF$cptable[which(modelHF$cptable[,'xerror']==min(modelHF$cptable[,'xerror'])),'CP']
+            prunedModelHF <- prune(modelHF,cp=cp)
+            
+            plot(prunedModelHF, uniform=TRUE,
+                 main="Pruned Classification Tree HF")
+            text(prunedModelHF, use.n=TRUE, all=TRUE, cex=.8)
+            print(prunedModelHF)
+            
             #summary(modelHF)
-            plot(modelHF, uniform=TRUE,
-                 main="Classification Tree HF")
-            text(modelHF, use.n=TRUE, all=TRUE, cex=.8)
-            print(modelHF)
+            # plot(modelHF, uniform=TRUE,
+            #      main="Classification Tree HF")
+            # text(modelHF, use.n=TRUE, all=TRUE, cex=.8)
+            # print(modelHF)
             print(paste0("The accuracy of the model was ",signif(accHF,2)))
             print('done')
-            return(modelHF)},
+            return(prunedModelHF)},
          CF = {# Cluster tree
            library(party)
            print("Generating conditional inference framework Tree")
