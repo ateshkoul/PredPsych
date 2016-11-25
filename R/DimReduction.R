@@ -5,6 +5,8 @@
 #' 
 #' @param Data         (dataframe) a data frame with variable/feature columns
 #' @param selectedCol  (optional)(numeric) which columns should be treated as data(features/columns) (defaults to all columns)
+#' @param classCol     (optional)(vector) optional vector for visualising plots
+#' @param plot         (optional)(logical) To plot or not to plot
 #' 
 #' @details 
 #' Dimensionality Reduction is the process of reducing the dimensions of the dataset. 
@@ -19,27 +21,27 @@
 #'
 #'@examples
 #'# reducing dimension of Grip aperture from 10 to 2
-#'GripAperture <- DimensionRed(KinData,selectedCols = 12:21,outcome = KinData[,"Object.Size"],plot = TRUE)
+#'GripAperture <- DimensionRed(KinData,selectedCols = 12:21,classCol = KinData[,"Object.Size"],plot = TRUE)
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,...){
+DimensionRed <- function(Data,method="MDS",selectedCols,classCol=NA,plot=FALSE,...){
   # if nothing specific is provided, default to all the columns
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
-  if(plot & any(is.na(outcome)))  cat("Perhaps you forgot the outcome vector \nPlease enter the outcome vector for the plot")
+  if(plot & any(is.na(classCol)))  cat("Perhaps you forgot the classCol vector \nPlease enter the classCol vector for the plot")
   
   
   switch(method,
          MDS = {
            DistanceMatrix <- dist(Data[,selectedCols])
            multiDimScale <- cmdscale(DistanceMatrix,...)
-           if(plot & any(!is.na(outcome))) {
+           if(plot & any(!is.na(classCol))) {
              # update data for plotting
              library(ggplot2)
-             plotData <- data.frame(multiDimScale,outcome = factor(outcome))
-             p <- ggplot(plotData,aes(x=X1,y=X2,col=outcome))+
+             plotData <- data.frame(multiDimScale,outcome = factor(classCol))
+             p <- ggplot(plotData,aes(x=X1,y=X2,col=classCol))+
                geom_point()+theme_bw()+scale_color_grey(end = 0.7)+
                theme(panel.grid = element_blank())+stat_ellipse(type = 'norm')#+guides(col=FALSE)
              print(p)

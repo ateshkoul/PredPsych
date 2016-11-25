@@ -3,7 +3,7 @@
 #' function for performing generic classification Analysis
 #' 
 #' @param Data            (dataframe) dataframe of the data
-#' @param predictorCol    (numeric) column number that contains the variable to be predicted
+#' @param classCol        (numeric) column number that contains the variable to be predicted
 #' @param selectedCols    (optional) (numeric) all the columns of data that would be used either as predictor or as feature
 #' @param classifierName  (optional) (string) name of the classifier to be used
 #' @param genclassifier   (optional) (function or string) a classifier function or a name (e.g. Classifier.svm)
@@ -25,7 +25,7 @@
 #'
 #'@examples
 #'#classification analysis with SVM
-#'Results <- classifyFun(Data = KinData,predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#'Results <- classifyFun(Data = KinData,classCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 #'# output
 #'# [1] "Begining k-fold Classification"
 #'# [1] "Mean CV Accuracy 0.66"
@@ -37,7 +37,7 @@
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,SetSeed=TRUE,...){
+classifyFun <- function(Data,classCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,SetSeed=TRUE,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
   library(e1071)
@@ -51,8 +51,8 @@ classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,co
     # get the features
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
-  featureColNames <- selectedColNames[-match(names(Data)[predictorCol],selectedColNames)]
-  predictorColNames <- names(Data)[predictorCol]
+  featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
+  predictorColNames <- names(Data)[classCol]
 
   Data = Data[,selectedCols]
   Data[,predictorColNames] = factor(Data[,predictorColNames])
@@ -71,12 +71,12 @@ classifyFun <- function(Data,predictorCol,selectedCols,ranges=NULL,tune=FALSE,co
     # 3. for testing prediction (on a data that it has never seen ever)
     #
     # Keeping more for tuning
-    trainIndexOverall <- createFolds(Data[,predictorCol],list = FALSE,k = folds)
+    trainIndexOverall <- createFolds(Data[,classCol],list = FALSE,k = folds)
     # leave first part for tuning the classifier
     tuneTrainData <- Data[trainIndexOverall==1,]
     ModelTrainData <- Data[trainIndexOverall==2,]
     ModelTestData <- Data[trainIndexOverall==3,]
-    obj <- getTunedParam(tuneTrainData,predictorCol,classifierName,featureColNames,ranges)["best.parameters"]
+    obj <- getTunedParam(tuneTrainData,classCol,classifierName,featureColNames,ranges)["best.parameters"]
 
   } else{
     folds = 2
@@ -123,7 +123,7 @@ return(mean(accTest))
 }
 
 # get tuned parameters
-getTunedParam <- function(tuneTrainData,predictorCol,classifierName,featureColNames,ranges=NULL){
+getTunedParam <- function(tuneTrainData,classCol,classifierName,featureColNames,ranges=NULL){
 
   classifierFun <- get(classifierName)
   if(missing(featureColNames)) featureColNames <- 1:length(names(tuneTrainData))
@@ -132,12 +132,12 @@ getTunedParam <- function(tuneTrainData,predictorCol,classifierName,featureColNa
   # only in case of svm, suggest
   if(classifierName=="svm"){
     if (is.null(ranges)) ranges = list(gamma = 2^(-1:1), cost = 2^(2:4))
-    obj <- tune(classifierFun, train.y = tuneTrainData[,predictorCol],train.x = tuneTrainData[,featureColNames],
+    obj <- tune(classifierFun, train.y = tuneTrainData[,classCol],train.x = tuneTrainData[,featureColNames],
                 ranges = ranges,tunecontrol = tune.control(sampling = "fix"))
   } else if(classifierName=="knn3") {
     # chgoose range of k
     if (is.null(ranges)) ranges = 1:10
-    obj <- tune.knn(y = tuneTrainData[,predictorCol],x = tuneTrainData[,featureColNames],
+    obj <- tune.knn(y = tuneTrainData[,classCol],x = tuneTrainData[,featureColNames],
                 k = ranges,tunecontrol = tune.control(sampling = "fix"))
   }
   print(summary(obj))

@@ -3,7 +3,7 @@
 #' A simple function to generate F-scores (Fisher scores) for ranking features
 #' 
 ##'@param Data        (dataframe) Data dataframe
-#' @param featSep     (numeric) column with different classes
+#' @param classCol     (numeric) column with different classes
 #' @param featureCol  (numeric) all the columns that contain features
 #' 
 #' @details 
@@ -15,18 +15,18 @@
 #' @return named numeric \code{f-scores} 
 #' @examples 
 #' # calculate f-scores for 10% of movement
-#' fscore(KinData,featSep = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
+#' fscore(KinData,classCol = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
 #'
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-fscore <- function(Data,featSep,featureCol){
+fscore <- function(Data,classCol,featureCol){
   tr <- function(m) return(sum(diag(m)))
   # separate positive and negative feature sets
-  posIns  <- Data[Data[,featSep]==unique(Data[,featSep])[1],]
-  negIns  <- Data[Data[,featSep]==unique(Data[,featSep])[2],]
+  posIns  <- Data[Data[,classCol]==unique(Data[,classCol])[1],]
+  negIns  <- Data[Data[,classCol]==unique(Data[,classCol])[2],]
   f_score <- vector()
   featureColNames <- names(Data)[featureCol]
 

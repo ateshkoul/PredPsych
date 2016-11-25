@@ -3,12 +3,17 @@
 #' A simple function to perform cross-validated Linear Discriminant Analysis
 #' 
 #' @param Data                 (dataframe) Data dataframe
-#' @param predictorCol         (numeric)  column number that contains the variable to be predicted
+#' @param classCol             (numeric)  column number that contains the variable to be predicted
 #' @param selectedCols         (optional) (numeric)  all the columns of data that would be used either as predictor or as feature
 #' @param CV                   (optional) (logical) perform Cross validation of training dataset? 
 #' If TRUE, posterior probabilites are present with the model
 #' @param cvFraction           (optional) (numeric) Fraction of data to keep for training data
 #' @param extendedResults      (optional) (logical) Return extended results with model?
+#' @param SetSeed              (optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
+#'                             set false only for permutation tests
+#' @param cvType               (optional) (string) type of cross validation to perform if cvType = 'createDataPartition' a portion of data (cvFraction) is used, 
+#'                              For cvType = 'Folds', a n-fold cross validation is performed.
+#' @param k                    (optional) (numeric) the number of folds to use in case cvType = 'Folds'
 #' 
 #' @details 
 #' The function implements Linear Disciminant Analysis, a simple algorithm for classification based analyses
@@ -26,7 +31,7 @@
 #'  
 #' @examples
 #' # simple model with data partition of 80% and no extended results 
-#' LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#' LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 #' #outout
 #' #       Predicted
 #' #Actual  1  2
@@ -34,7 +39,7 @@
 #' #2 40 45
 #' #"The accuracy of discrimination was 0.57"
 #'
-#' LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+#' LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
 #' CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
 #'
 #'
@@ -43,7 +48,7 @@
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,cvType="createDataPartition",k=10,...){
+LinearDA <- function(Data,classCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,cvType="createDataPartition",k=10,...){
   #simple function to perform linear discriminant analysis
   library(MASS)
   library(caret)
@@ -59,13 +64,13 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
-  featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]
+  featureColNames <- selectedColNames[-grep(names(Data)[classCol],selectedColNames)]
   
-  Data[,predictorCol] <- factor(Data[,predictorCol])
+  Data[,classCol] <- factor(Data[,classCol])
   switch(cvType,
          createDataPartition = {
            # cross validate with 80% data in train set
-           index <- createDataPartition(Data[,predictorCol],p=cvFraction,times=1)
+           index <- createDataPartition(Data[,classCol],p=cvFraction,times=1)
            DataTrain <- Data[1:nrow(Data) %in% index$Resample1,]
            DataTest <- Data[!(1:nrow(Data) %in% index$Resample1),]
            cat("Proportion of Test/Train Data was : ",nrow(DataTest)/nrow(DataTrain),"\n")
@@ -78,14 +83,14 @@ LinearDA <- function(Data,predictorCol,selectedCols,CV=FALSE,cvFraction=0.8,exte
          }
   )
   
-  fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,predictorCol],CV = CV,...)
+  fit <- lda(DataTrain[,featureColNames],grouping = DataTrain[,classCol],CV = CV,...)
   # if CV = 
   if(!CV){
     predicted <- predict(fit,newdata=DataTest[,featureColNames])
-    truth <- DataTest[,predictorCol]
+    truth <- DataTest[,classCol]
     fit <- list(fit = fit,TestTruth = truth, TestPredicted = predicted)
     print(table(truth,predicted$class,dnn = c("Actual","Predicted")))
-    Acc <- sum(1 * (predicted$class==DataTest[,predictorCol]))/length(predicted$class)
+    Acc <- sum(1 * (predicted$class==DataTest[,classCol]))/length(predicted$class)
     print(paste("The accuracy of discrimination was",signif(Acc,2)))
     # print the confusion matrix
     # confusionMatrix(table(truth,predicted$class))

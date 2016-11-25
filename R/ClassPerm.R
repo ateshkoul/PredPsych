@@ -3,7 +3,7 @@
 #' simple function to create permutation testing of a classifier
 #' 
 #' @param Data            (dataframe) dataframe of the data
-#' @param predictorCol    (numeric) column number that contains the variable to be predicted
+#' @param classCol        (numeric) column number that contains the variable to be predicted
 #' @param selectedCols    (optional) (numeric) all the columns of data that would be used either as predictor or as feature
 #' @param classifierFun   (optional) (function) classifier function
 #' @param nSims           (optional) (numeric) number of simulations
@@ -20,7 +20,7 @@
 #'
 #'@examples
 #'# perform a permutation testing for 10% of the kinematics movement data
-#'PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,
+#'PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
 #'  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
 #'
 #'
@@ -30,7 +30,7 @@
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,...){
+ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,...){
   # classifierFun is a function that the use inputs to calculate the permutation scores
   # The form of this function should return accuracy as a single value.
   # Extra options should be specified in the classifier function
@@ -48,7 +48,7 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
   
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
-  featureColNames <- selectedColNames[-grep(names(Data)[predictorCol],selectedColNames)]
+  featureColNames <- selectedColNames[-grep(names(Data)[classCol],selectedColNames)]
   
   # X <- Data[,featureColNames]
   # Y <- Data[predictor]
@@ -64,16 +64,16 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
   # }
 
   # if your targets are not factors, make them..
-  if(!(is.factor(Data[,predictorCol]))) Data[,predictorCol] <- factor(Data[,predictorCol])
+  if(!(is.factor(Data[,classCol]))) Data[,classCol] <- factor(Data[,classCol])
   
   
   print("Performing Cross Validation")
   set.seed(111)
   # First calculate actual accuracy
   # Keep the seed constant in this case (we want the same accuracy)
-  actualAcc <- classifierFun(Data,predictorCol,selectedCols,SetSeed = FALSE,...)
+  actualAcc <- classifierFun(Data,classCol,selectedCols,SetSeed = FALSE,...)
   # calculate permutation scores by randomly sampling targets
-  chanceAcc <- 1/(length(unique(Data[,predictorCol])))
+  chanceAcc <- 1/(length(unique(Data[,classCol])))
   # permutator is a simple function that randomly shuffles targets and spits out accuracies
   permutator <-function(Data,predictorCol,selectedCols){
     Data[,predictorCol] <- sample(Data[,predictorCol])
@@ -93,8 +93,9 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
   # we set seed in the classification function
   #set.seed(111)
 
-  distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(Data,predictorCol,selectedCols),.progress = progress_time())))
+  distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(Data,classCol,selectedCols),.progress = progress_time())))
   p_value = sum(distNull$nullAcc >= actualAcc)/nSims
+  print(paste0('The p-value of the permutation testing is ',p_value))
 
   # plot with automatically adjusting the height of the y-axis using 1 sd of the data
   plot <- ggplot(distNull,aes(nullAcc))+
@@ -160,7 +161,7 @@ ClassPerm <- function(Data,predictorCol,selectedCols,classifierFun,nSims=1000,..
 # }
 
 
-LinearSVM <- function(Data,predictorCol,selectedCols,SetSeed = T,silent,...){
+LinearSVM <- function(Data,classCol,selectedCols,SetSeed = T,silent,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
   library(e1071)
@@ -168,8 +169,8 @@ LinearSVM <- function(Data,predictorCol,selectedCols,SetSeed = T,silent,...){
   # defaults to 10 fold cross validation
   selectedColNames <- names(Data)[selectedCols]
   # get feature columns without response
-  featureColNames <- selectedColNames[-match(names(Data)[predictorCol],selectedColNames)]
-  predictorColNames <- names(Data)[predictorCol]
+  featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
+  predictorColNames <- names(Data)[classCol]
   
   Data = Data[,selectedCols]
   Data[,predictorColNames] = factor(Data[,predictorColNames])
@@ -177,7 +178,7 @@ LinearSVM <- function(Data,predictorCol,selectedCols,SetSeed = T,silent,...){
   k = 10
   # use stratified cross validation instead
   # use 80% data for training
-  trainIndex <- createFolds(Data[,predictorCol], list = FALSE,k = k)
+  trainIndex <- createFolds(Data[,classCol], list = FALSE,k = k)
   acc <- rep(NA,k)
   for (i in 1:k){
     trainX <- Data[!trainIndex==i,featureColNames]
