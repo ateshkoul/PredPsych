@@ -4,13 +4,14 @@
 \alias{LinearDA}
 \title{Cross-validated Linear Discriminant Analysis}
 \usage{
-LinearDA(Data, predictorCol, selectedCols, CV = FALSE, cvFraction = 0.8,
-  extendedResults = FALSE, SetSeed = TRUE, ...)
+LinearDA(Data, classCol, selectedCols, CV = FALSE, cvFraction = 0.8,
+  extendedResults = FALSE, SetSeed = TRUE, cvType = "createDataPartition",
+  k = 10, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
 
-\item{predictorCol}{(numeric)  column number that contains the variable to be predicted}
+\item{classCol}{(numeric)  column number that contains the variable to be predicted}
 
 \item{selectedCols}{(optional) (numeric)  all the columns of data that would be used either as predictor or as feature}
 
@@ -20,6 +21,14 @@ If TRUE, posterior probabilites are present with the model}
 \item{cvFraction}{(optional) (numeric) Fraction of data to keep for training data}
 
 \item{extendedResults}{(optional) (logical) Return extended results with model?}
+
+\item{SetSeed}{(optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
+set false only for permutation tests}
+
+\item{cvType}{(optional) (string) type of cross validation to perform if cvType = 'createDataPartition' a portion of data (cvFraction) is used, 
+For cvType = 'Folds', a n-fold cross validation is performed.}
+
+\item{k}{(optional) (numeric) the number of folds to use in case cvType = 'Folds'}
 }
 \value{
 Depending upon \code{extendedResults}. \code{extendedResults} FALSE =  \code{Acc} of discrimination () \code{extendedResults} TRUE 
@@ -39,7 +48,7 @@ a single new composite variable, the discriminant function, is produced (for det
 }
 \examples{
 # simple model with data partition of 80\% and no extended results 
-LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 #outout
 #       Predicted
 #Actual  1  2
@@ -47,7 +56,7 @@ LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,2
 #2 40 45
 #"The accuracy of discrimination was 0.57"
 
-LDAModel <- LinearDA(Data = KinData, predictorCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
 CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
 
 

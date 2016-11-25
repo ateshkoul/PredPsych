@@ -4,12 +4,12 @@
 \alias{ClassPerm}
 \title{Permutation Analysis for classification}
 \usage{
-ClassPerm(Data, predictorCol, selectedCols, classifierFun, nSims = 1000, ...)
+ClassPerm(Data, classCol, selectedCols, classifierFun, nSims = 1000, ...)
 }
 \arguments{
 \item{Data}{(dataframe) dataframe of the data}
 
-\item{predictorCol}{(numeric) column number that contains the variable to be predicted}
+\item{classCol}{(numeric) column number that contains the variable to be predicted}
 
 \item{selectedCols}{(optional) (numeric) all the columns of data that would be used either as predictor or as feature}
 
@@ -33,7 +33,7 @@ shuffling the labels of the dataset (i.e. randomly shuffling classes/conditions 
 }
 \examples{
 # perform a permutation testing for 10\% of the kinematics movement data
-PermutationResult <- ClassPerm(Data = KinData, predictorCol = 1,
+PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
 
 

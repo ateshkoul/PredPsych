@@ -11,6 +11,9 @@
 #' @param tune            (optional) (logical) whether tuning of svm parameters should be performed or not
 #' @param cost            (optional) (numeric) regularization parameter of svm
 #' @param gamma           (optional) (numeric)  rbf kernel parameter
+#' @param silent          (optional) (logical) whether to print messages on mean accuracy or not
+#' @param SetSeed         (optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
+#'                             set false only for permutation tests
 #' 
 #' @details 
 #' This function implents Classification Analysis. 

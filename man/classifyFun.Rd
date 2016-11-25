@@ -4,14 +4,14 @@
 \alias{classifyFun}
 \title{Generic Classification Analyses}
 \usage{
-classifyFun(Data, predictorCol, selectedCols, ranges = NULL, tune = FALSE,
+classifyFun(Data, classCol, selectedCols, ranges = NULL, tune = FALSE,
   cost = 1, gamma = 0.5, classifierName = "svm",
   genclassifier = Classifier.svm, silent = FALSE, SetSeed = TRUE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) dataframe of the data}
 
-\item{predictorCol}{(numeric) column number that contains the variable to be predicted}
+\item{classCol}{(numeric) column number that contains the variable to be predicted}
 
 \item{selectedCols}{(optional) (numeric) all the columns of data that would be used either as predictor or as feature}
 
@@ -26,6 +26,11 @@ classifyFun(Data, predictorCol, selectedCols, ranges = NULL, tune = FALSE,
 \item{classifierName}{(optional) (string) name of the classifier to be used}
 
 \item{genclassifier}{(optional) (function or string) a classifier function or a name (e.g. Classifier.svm)}
+
+\item{silent}{(optional) (logical) whether to print messages on mean accuracy or not}
+
+\item{SetSeed}{(optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
+set false only for permutation tests}
 }
 \value{
 Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
@@ -43,7 +48,7 @@ would be achieved.
 }
 \examples{
 #classification analysis with SVM
-Results <- classifyFun(Data = KinData,predictorCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+Results <- classifyFun(Data = KinData,classCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 # output
 # [1] "Begining k-fold Classification"
 # [1] "Mean CV Accuracy 0.66"

@@ -4,14 +4,14 @@
 \alias{fscore}
 \title{f-score}
 \usage{
-fscore(Data, featSep, featureCol)
+fscore(Data, classCol, featureCol)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
 
-\item{featureCol}{(numeric) all the columns that contain features}
+\item{classCol}{(numeric) column with different classes}
 
-\item{featSel}{(numeric) column with different classes}
+\item{featureCol}{(numeric) all the columns that contain features}
 }
 \value{
 named numeric \code{f-scores}
@@ -26,7 +26,7 @@ classes. The higher the F-score, the better the discriminatory power of that fea
 }
 \examples{
 # calculate f-scores for 10\% of movement
-fscore(KinData,featSep = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
+fscore(KinData,classCol = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
 
 }
 \author{
