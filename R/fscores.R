@@ -33,5 +33,7 @@ fscore <- function(Data,classCol,featureCol){
   for(feature in featureColNames){
     f_score[feature] = (norm(as.matrix(mean(posIns[,feature])-mean(negIns[,feature])))^2)/(tr(cov(as.matrix(posIns[,feature]))) + tr(cov(as.matrix(negIns[,feature]))))
   }
+  # show only 2 significant digits
+  f_score <- signif(f_score,2)
   return(f_score)
 }
