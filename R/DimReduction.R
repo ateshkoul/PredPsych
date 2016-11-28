@@ -40,9 +40,9 @@ DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,..
            if(plot & any(!is.na(outcome))) {
              # update data for plotting
              library(ggplot2)
-             plotData <- data.frame(multiDimScale,outcome = factor(outcome))
-             p <- ggplot(plotData,aes(x=X1,y=X2,col=outcome))+
-               geom_point()+theme_bw()+scale_color_grey(end = 0.7)+
+             plotData <- data.frame(Dimension_1 = multiDimScale[,1],Dimension_2=multiDimScale[,2],outcome = factor(outcome))
+             p <- ggplot(plotData,aes(x=Dimension_1,y=Dimension_2,col=outcome))+
+               geom_point()+theme_bw(base_size = 18)+scale_color_grey(end = 0.7)+
                theme(panel.grid = element_blank())+stat_ellipse(type = 'norm')#+guides(col=FALSE)
              print(p)
            }
