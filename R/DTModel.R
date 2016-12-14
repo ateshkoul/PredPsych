@@ -15,10 +15,11 @@
 #'      \item RF =   Random Forest Tree;    
 #'      }
 #' @details 
-#' The function implements the Decision Tree models (DT models). DT models fall under the general ‘Tree based methods’ 
+#' The function implements the Decision Tree models (DT models).
+#' DT models fall under the general "Tree based methods"
 #' involving generation of a recursive binary tree (Hastie et al., 2009).
 #' In terms of input, DT  models can handle both continuous and categorical variables
-#' as well as missing data. From the input data, DT  models build a set of logical ‘if ..then’ rules
+#' as well as missing data. From the input data, DT  models build a set of logical "if ..then" rules
 #' that permit accurate prediction of the input cases.
 #' 
 #' Unlike regression methods like GLMs,  Decision Trees are more flexible and can model nonlinear interactions.           

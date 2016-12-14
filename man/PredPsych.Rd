@@ -8,4 +8,7 @@
 \description{
 PredPsych.
 }
+\details{
+"PredPsych" is a user-friendly, R toolbox based on machine learning predictive algorithms.
+}
 
