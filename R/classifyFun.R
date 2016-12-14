@@ -16,7 +16,7 @@
 #'                             set false only for permutation tests
 #' 
 #' @details 
-#' This function implents Classification Analysis. 
+#' This function implements Classification Analysis. 
 #' Classification Analysis is a supervised machine learning approach that attempts to identify 
 #' holistic patters in the data and assign to it classes (classification). Given a set of features, 
 #' a classification analysis automatically learns intrinsic patterns in the data to be able to predict 

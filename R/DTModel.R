@@ -1,21 +1,21 @@
-#' Generic Classification and Regression Tree Function
+#' Generic Decision Tree Function
 #' 
 #'
-#' A simple function to create Classification and Regression Trees
+#' A simple function to create Decision Trees
 #' 
 #' @param Data         (dataframe) a data frame with regressors and response
 #' @param classCol  (numeric) which column should be used as response col
 #' @param selectedCols  (optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)
-#' @param tree         which cart model to implement; One of the following values:
+#' @param tree         which decision tree model to implement; One of the following values:
 #'      \itemize{
-#'      \item CART     =   Classification And Regress Tree; 
-#'      \item CARTNAHF = Crossvalidated Half Model Tree removing missing values;
-#'      \item CARTHF =   Crossvalidated Half Model Tree With missing values;
+#'      \item CART     =   Classification And Regression Tree; 
+#'      \item CARTNAHF = Crossvalidated Half Model CART Tree removing missing values;
+#'      \item CARTHF =   Crossvalidated Half Model CART Tree With missing values;
 #'      \item CF =   Conditional inference framework Tree;
 #'      \item RF =   Random Forest Tree;    
 #'      }
 #' @details 
-#' The function implements the CaRT modelling. DTmodels fall under the general ‘Tree based methods’ 
+#' The function implements the Decision Tree models (DT models). DT models fall under the general ‘Tree based methods’ 
 #' involving generation of a recursive binary tree (Hastie et al., 2009).
 #' In terms of input, DT  models can handle both continuous and categorical variables
 #' as well as missing data. From the input data, DT  models build a set of logical ‘if ..then’ rules

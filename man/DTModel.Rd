@@ -2,7 +2,7 @@
 % Please edit documentation in R/DTModel.R
 \name{DTModel}
 \alias{DTModel}
-\title{Generic Classification and Regression Tree Function}
+\title{Generic Decision Tree Function}
 \usage{
 DTModel(Data, classCol, selectedCols, tree, ...)
 }
@@ -13,11 +13,11 @@ DTModel(Data, classCol, selectedCols, tree, ...)
 
 \item{selectedCols}{(optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)}
 
-\item{tree}{which cart model to implement; One of the following values:
+\item{tree}{which decision tree model to implement; One of the following values:
 \itemize{
-\item CART     =   Classification And Regress Tree; 
-\item CARTNAHF = Crossvalidated Half Model Tree removing missing values;
-\item CARTHF =   Crossvalidated Half Model Tree With missing values;
+\item CART     =   Classification And Regression Tree; 
+\item CARTNAHF = Crossvalidated Half Model CART Tree removing missing values;
+\item CARTHF =   Crossvalidated Half Model CART Tree With missing values;
 \item CF =   Conditional inference framework Tree;
 \item RF =   Random Forest Tree;    
 }}
@@ -26,10 +26,10 @@ DTModel(Data, classCol, selectedCols, tree, ...)
 model result for the input tree \code{Results}
 }
 \description{
-A simple function to create Classification and Regression Trees
+A simple function to create Decision Trees
 }
 \details{
-The function implements the CaRT modelling. DTmodels fall under the general ‘Tree based methods’ 
+The function implements the Decision Tree models (DT models). DT models fall under the general ‘Tree based methods’ 
 involving generation of a recursive binary tree (Hastie et al., 2009).
 In terms of input, DT  models can handle both continuous and categorical variables
 as well as missing data. From the input data, DT  models build a set of logical ‘if ..then’ rules
