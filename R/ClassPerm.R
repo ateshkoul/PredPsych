@@ -100,7 +100,7 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,...){
   # plot with automatically adjusting the height of the y-axis using 1 sd of the data
   plot <- ggplot(distNull,aes(nullAcc))+
     #geom_line(aes(x = c(actualAcc,actualAcc),y=c(0,max(density(dframe$x)$y)+ sd(density(dframe$x)$y))),data=dataActual)+
-    geom_vline(xintercept = actualAcc,colour='red')+
+    geom_vline(xintercept = actualAcc,colour='blue')+
     geom_vline(xintercept = chanceAcc,colour='red')+
     geom_density(fill='darkblue',alpha=0.3)+
     ggtitle("Permutation curve") +
