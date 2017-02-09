@@ -21,6 +21,8 @@ DTModel(Data, classCol, selectedCols, tree, ...)
 \item CF =   Conditional inference framework Tree;
 \item RF =   Random Forest Tree;    
 }}
+
+\item{...}{(optional) additional arguments for the function}
 }
 \value{
 model result for the input tree \code{Results}
@@ -40,9 +42,8 @@ Unlike regression methods like GLMs,  Decision Trees are more flexible and can m
 }
 \examples{
 # generate a cart model for 10\% of the data with cross-validation
-model <- DTModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],classCol=1,tree='CARTHF')
-
-
+model <- DTModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],
+classCol=1,tree='CARTHF')
 
 }
 \author{

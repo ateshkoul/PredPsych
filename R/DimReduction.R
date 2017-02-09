@@ -3,10 +3,12 @@
 #'
 #' A simple function to perform dimensionality reduction
 #' 
-#' @param Data         (dataframe) a data frame with variable/feature columns
+#' @param Data          (dataframe)  a data frame with variable/feature columns
+#' @param method        (optional) (character) Dimensionality reduction method to be used
 #' @param selectedCols  (optional)(numeric) which columns should be treated as data(features/columns) (defaults to all columns)
-#' @param outcome     (optional)(vector) optional vector for visualising plots
-#' @param plot         (optional)(logical) To plot or not to plot
+#' @param outcome       (optional)(vector) optional vector for visualising plots
+#' @param plot          (optional)(logical) To plot or not to plot
+#' @param ...           (optional) additional arguments for the function
 #' 
 #' @details 
 #' Dimensionality Reduction is the process of reducing the dimensions of the dataset. 
@@ -21,7 +23,10 @@
 #'
 #'@examples
 #'# reducing dimension of Grip aperture from 10 to 2
-#'GripAperture <- DimensionRed(KinData,selectedCols = 12:21,outcome = KinData[,"Object.Size"],plot = TRUE)
+#'GripAperture <- DimensionRed(KinData,selectedCols = 12:21,
+#'outcome = KinData[,"Object.Size"],plot = TRUE)
+#'
+#'@import stats
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
@@ -39,7 +44,7 @@ DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,..
            multiDimScale <- cmdscale(DistanceMatrix,...)
            if(plot & any(!is.na(outcome))) {
              # update data for plotting
-             library(ggplot2)
+             #library(ggplot2)
              plotData <- data.frame(Dimension_1 = multiDimScale[,1],Dimension_2=multiDimScale[,2],outcome = factor(outcome))
              p <- ggplot(plotData,aes(x=Dimension_1,y=Dimension_2,col=outcome))+
                geom_point()+theme_bw(base_size = 18)+scale_color_grey(end = 0.7)+

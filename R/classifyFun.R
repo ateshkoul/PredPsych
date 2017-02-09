@@ -14,6 +14,7 @@
 #' @param silent          (optional) (logical) whether to print messages on mean accuracy or not
 #' @param SetSeed         (optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
 #'                             set false only for permutation tests
+#' @param ...             (optional) additional arguments for the function                             
 #' 
 #' @details 
 #' This function implements Classification Analysis. 
@@ -28,13 +29,14 @@
 #'
 #'@examples
 #'#classification analysis with SVM
-#'Results <- classifyFun(Data = KinData,classCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#'Results <- classifyFun(Data = KinData,classCol = 1,
+#'selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 #'# output
 #'# [1] "Begining k-fold Classification"
 #'# [1] "Mean CV Accuracy 0.66"
 #'# [1] "Mean Test Accuracy 0.62"
 #'
-#'
+#'@import e1071 caret
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
@@ -43,8 +45,8 @@
 classifyFun <- function(Data,classCol,selectedCols,ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier=Classifier.svm,silent=FALSE,SetSeed=TRUE,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
-  library(e1071)
-  library(caret)
+  #library(e1071)
+  #library(caret)
   # dont use a constant set.seed with permutation testing
   # u will get a constant accuracy!!
   #set.seed(123)

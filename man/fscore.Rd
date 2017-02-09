@@ -28,6 +28,8 @@ classes. The higher the F-score, the better the discriminatory power of that fea
 # calculate f-scores for 10\% of movement
 fscore(KinData,classCol = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
 
+
+
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia

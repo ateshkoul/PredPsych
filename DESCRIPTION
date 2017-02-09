@@ -1,25 +1,33 @@
 Package: PredPsych
 Type: Package
-Title: Generic Package for Predictive approaches in Psychology
+Title: Generic Package for Predictive Approaches in Psychology
 Version: 0.1
 Date: 2015-06-18
 Author: Atesh Koul
-Maintainer: <atesh.koul@iit.it>
+Maintainer: Atesh Koul <atesh.koul@iit.it>
 Description: The functions for Predictive approaches in Psychology
-License: GPL-V3
+License: GPL-3
 LazyData: TRUE
 Depends: 
     R (>= 3.1.0)
 Imports: 
     plyr,
     ggplot2,
-    openxlsx,
     caret,
     rpart,
-    plotly,
     e1071,
-    mclust
+    mclust,
+    MASS,
+    party,
+    randomForest,
+    foreach,
+    scales,
+    lazyeval,
+    tibble,
+    assertthat,
+    ModelMetrics,
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+Repository: CRAN

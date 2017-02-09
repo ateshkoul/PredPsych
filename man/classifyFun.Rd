@@ -31,6 +31,8 @@ classifyFun(Data, classCol, selectedCols, ranges = NULL, tune = FALSE,
 
 \item{SetSeed}{(optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
 set false only for permutation tests}
+
+\item{...}{(optional) additional arguments for the function}
 }
 \value{
 Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
@@ -48,12 +50,12 @@ would be achieved.
 }
 \examples{
 #classification analysis with SVM
-Results <- classifyFun(Data = KinData,classCol = 1,selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+Results <- classifyFun(Data = KinData,classCol = 1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 # output
 # [1] "Begining k-fold Classification"
 # [1] "Mean CV Accuracy 0.66"
 # [1] "Mean Test Accuracy 0.62"
-
 
 }
 \author{

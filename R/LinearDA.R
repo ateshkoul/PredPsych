@@ -14,6 +14,7 @@
 #' @param cvType               (optional) (string) type of cross validation to perform if cvType = 'createDataPartition' a portion of data (cvFraction) is used, 
 #'                              For cvType = 'Folds', a n-fold cross validation is performed.
 #' @param k                    (optional) (numeric) the number of folds to use in case cvType = 'Folds'
+#' @param ...                  (optional) additional arguments for the function
 #' 
 #' @details 
 #' The function implements Linear Disciminant Analysis, a simple algorithm for classification based analyses
@@ -31,7 +32,8 @@
 #'  
 #' @examples
 #' # simple model with data partition of 80% and no extended results 
-#' LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#' LDAModel <- LinearDA(Data = KinData, classCol = 1, 
+#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 #' #outout
 #' #       Predicted
 #' #Actual  1  2
@@ -39,10 +41,11 @@
 #' #2 40 45
 #' #"The accuracy of discrimination was 0.57"
 #'
-#' LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+#' LDAModel <- LinearDA(Data = KinData, classCol = 1,
+#'  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
 #' CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
 #'
-#'
+#'@import MASS caret
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
@@ -50,8 +53,8 @@
 #' @export
 LinearDA <- function(Data,classCol,selectedCols,CV=FALSE,cvFraction=0.8,extendedResults = FALSE,SetSeed=TRUE,cvType="createDataPartition",k=10,...){
   #simple function to perform linear discriminant analysis
-  library(MASS)
-  library(caret)
+  #library(MASS)
+  #library(caret)
   if(SetSeed)  set.seed(111)
   
   # set some checks

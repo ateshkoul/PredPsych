@@ -29,6 +29,8 @@ set false only for permutation tests}
 For cvType = 'Folds', a n-fold cross validation is performed.}
 
 \item{k}{(optional) (numeric) the number of folds to use in case cvType = 'Folds'}
+
+\item{...}{(optional) additional arguments for the function}
 }
 \value{
 Depending upon \code{extendedResults}. \code{extendedResults} FALSE =  \code{Acc} of discrimination () \code{extendedResults} TRUE 
@@ -48,7 +50,8 @@ a single new composite variable, the discriminant function, is produced (for det
 }
 \examples{
 # simple model with data partition of 80\% and no extended results 
-LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+LDAModel <- LinearDA(Data = KinData, classCol = 1, 
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 #outout
 #       Predicted
 #Actual  1  2
@@ -56,9 +59,9 @@ LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32
 #2 40 45
 #"The accuracy of discrimination was 0.57"
 
-LDAModel <- LinearDA(Data = KinData, classCol = 1, selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+LDAModel <- LinearDA(Data = KinData, classCol = 1,
+ selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
 CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
-
 
 }
 \author{

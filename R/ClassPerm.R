@@ -7,6 +7,8 @@
 #' @param selectedCols    (optional) (numeric) all the columns of data that would be used either as predictor or as feature
 #' @param classifierFun   (optional) (function) classifier function
 #' @param nSims           (optional) (numeric) number of simulations
+#' @param plot            (optional) (logical) whether to plot null accuracy distribution
+#' @param ...             (optional) additional arguments for the function
 #'
 #' @details 
 #' The function implements Permutation tests for classification.
@@ -23,23 +25,23 @@
 #'PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
 #'  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
 #'
-#'
+#'@import e1071 ggplot2 plyr caret
 #'
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
 #' @export
-ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,...){
+ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,plot=TRUE,...){
   # classifierFun is a function that the use inputs to calculate the permutation scores
   # The form of this function should return accuracy as a single value.
   # Extra options should be specified in the classifier function
   # Sample classifier function
   # load libraries
-  library(caret)
-  library(ggplot2)
-  library(plotly)
-  library(plyr)
+  # library(caret)
+  # library(ggplot2)
+  # library(plotly)
+  # library(plyr)
 
   # a bit complicated to implement a generic way to feed in variable arguements
   # match variable input
@@ -97,8 +99,9 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,...){
   p_value = sum(distNull$nullAcc >= actualAcc)/nSims
   print(paste0('The p-value of the permutation testing is ',p_value))
 
+  if(plot){
   # plot with automatically adjusting the height of the y-axis using 1 sd of the data
-  plot <- ggplot(distNull,aes(nullAcc))+
+  plotPerm <- ggplot(distNull,aes(nullAcc))+
     #geom_line(aes(x = c(actualAcc,actualAcc),y=c(0,max(density(dframe$x)$y)+ sd(density(dframe$x)$y))),data=dataActual)+
     geom_vline(xintercept = actualAcc,colour='blue')+
     geom_vline(xintercept = chanceAcc,colour='red')+
@@ -124,7 +127,8 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,...){
     scale_y_continuous(expand = c(0, 0), limits = c(0, max(density(distNull$nullAcc)$y)+ 0.3*sd(density(distNull$nullAcc)$y))) +
     scale_x_continuous(expand = c(0.01, 0.01), limits = c(-0.1, 1.01))
 
-  print(ggplotly(plot))
+  print(plotPerm)
+  }
   Results = list(actualAcc = actualAcc,p_value=p_value,nullAcc = distNull$nullAcc,plot=plot,distNull= distNull)
   return(Results)
 
@@ -164,7 +168,7 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,...){
 LinearSVM <- function(Data,classCol,selectedCols,SetSeed = T,silent,...){
   # a simplistic k-fold crossvalidation
   # For cross validation
-  library(e1071)
+  #library(e1071)
   #set.seed(111)
   # defaults to 10 fold cross validation
   selectedColNames <- names(Data)[selectedCols]

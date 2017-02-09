@@ -4,7 +4,8 @@
 \alias{ClassPerm}
 \title{Permutation Analysis for classification}
 \usage{
-ClassPerm(Data, classCol, selectedCols, classifierFun, nSims = 1000, ...)
+ClassPerm(Data, classCol, selectedCols, classifierFun, nSims = 1000,
+  plot = TRUE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) dataframe of the data}
@@ -16,6 +17,10 @@ ClassPerm(Data, classCol, selectedCols, classifierFun, nSims = 1000, ...)
 \item{classifierFun}{(optional) (function) classifier function}
 
 \item{nSims}{(optional) (numeric) number of simulations}
+
+\item{plot}{(optional) (logical) whether to plot null accuracy distribution}
+
+\item{...}{(optional) additional arguments for the function}
 }
 \value{
 Returns \code{actualAcc} of the classification analysis,
@@ -35,8 +40,6 @@ shuffling the labels of the dataset (i.e. randomly shuffling classes/conditions 
 # perform a permutation testing for 10\% of the kinematics movement data
 PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
-
-
 
 }
 \author{

@@ -3,8 +3,8 @@
 #'
 #' A simple function to create Decision Trees
 #' 
-#' @param Data         (dataframe) a data frame with regressors and response
-#' @param classCol  (numeric) which column should be used as response col
+#' @param Data          (dataframe) a data frame with regressors and response
+#' @param classCol      (numeric) which column should be used as response col
 #' @param selectedCols  (optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)
 #' @param tree         which decision tree model to implement; One of the following values:
 #'      \itemize{
@@ -14,6 +14,7 @@
 #'      \item CF =   Conditional inference framework Tree;
 #'      \item RF =   Random Forest Tree;    
 #'      }
+#' @param ...           (optional) additional arguments for the function
 #' @details 
 #' The function implements the Decision Tree models (DT models).
 #' DT models fall under the general "Tree based methods"
@@ -27,10 +28,11 @@
 #' @return  model result for the input tree \code{Results}  
 #' @examples
 #' # generate a cart model for 10% of the data with cross-validation
-#' model <- DTModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],classCol=1,tree='CARTHF')
+#' model <- DTModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],
+#' classCol=1,tree='CARTHF')
 #' 
-#' 
-#' 
+#' @import caret rpart  party
+#' @importFrom randomForest randomForest
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
@@ -38,10 +40,7 @@
 #' @export
 DTModel <- function(Data,classCol,selectedCols,tree,...){
 
-  
-  
-  
-  library(caret)
+  #library(caret)
 
   # if nothing specific is provided, default to all the columns
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
@@ -57,7 +56,7 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
   
   switch(tree,
          CART = {
-           library(rpart)
+           #library(rpart)
            print("Generating Full Model Tree")
            # Full tree
            modelF <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=Data[,selectedCols],method = 'class')  
@@ -71,7 +70,7 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
            return(modelF)},
          
          CARTNAHF = {
-             library(rpart)
+             #library(rpart)
              print("Generating crossvalidated Half Model Tree NO Mssing values")
              # remove NAs as I use a stratified cross validation (may not be necessary)
              DatNoNA <- Data[!is.na(Data[,classCol]),]
@@ -109,7 +108,7 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
               print('done')
               return(prunedModelNAHF)},
          CARTHF = {
-           library(rpart)
+           #library(rpart)
            print("Generating crossvalidated Half Model Tree With Missing Values")
            # just divide as test and train if u want
             k = 2
@@ -139,7 +138,7 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
             print('done')
             return(prunedModelHF)},
          CF = {# Cluster tree
-           library(party)
+           #library(party)
            print("Generating conditional inference framework Tree")
            # remove NAs as I use a stratified cross validation (may not be necessary)
            DatNoNA <- Data[!is.na(Data[,classCol]),]
@@ -152,7 +151,7 @@ DTModel <- function(Data,classCol,selectedCols,tree,...){
            print('done')
            return(modelCF)},
          RF = {  # Random forest
-           library(randomForest)
+           #library(randomForest)
             print("Generating Random Forest Tree")
            # remove NAs as I use a stratified cross validation (may not be necessary)
            DatNoNA <- Data[!is.na(Data[,classCol]),]

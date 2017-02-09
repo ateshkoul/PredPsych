@@ -8,13 +8,17 @@ DimensionRed(Data, method = "MDS", selectedCols, outcome = NA,
   plot = FALSE, ...)
 }
 \arguments{
-\item{Data}{(dataframe) a data frame with variable/feature columns}
+\item{Data}{(dataframe)  a data frame with variable/feature columns}
+
+\item{method}{(optional) (character) Dimensionality reduction method to be used}
 
 \item{selectedCols}{(optional)(numeric) which columns should be treated as data(features/columns) (defaults to all columns)}
 
 \item{outcome}{(optional)(vector) optional vector for visualising plots}
 
 \item{plot}{(optional)(logical) To plot or not to plot}
+
+\item{...}{(optional) additional arguments for the function}
 }
 \value{
 Data frame with \code{Results}
@@ -32,7 +36,9 @@ demonstrated in the current implementation.
 }
 \examples{
 # reducing dimension of Grip aperture from 10 to 2
-GripAperture <- DimensionRed(KinData,selectedCols = 12:21,outcome = KinData[,"Object.Size"],plot = TRUE)
+GripAperture <- DimensionRed(KinData,selectedCols = 12:21,
+outcome = KinData[,"Object.Size"],plot = TRUE)
+
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
