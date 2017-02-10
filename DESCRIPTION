@@ -19,16 +19,7 @@ Imports:
     mclust,
     MASS,
     party,
-    randomForest,
-    foreach,
-    scales,
-    lazyeval,
-    tibble,
-    assertthat,
-    ModelMetrics,
-    iterators,
-    gtable,
-    Rcpp
+    randomForest
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
