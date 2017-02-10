@@ -18,7 +18,8 @@ Imports:
     e1071,
     mclust,
     MASS,
-    scales
+    scales,
+    pbkrtest
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
