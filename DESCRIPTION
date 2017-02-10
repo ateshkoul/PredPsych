@@ -11,6 +11,7 @@ LazyData: TRUE
 Depends: 
     R (>= 3.1.0)
 Imports: 
+    pbkrtest,
     plyr,
     ggplot2,
     caret,
@@ -18,8 +19,7 @@ Imports:
     e1071,
     mclust,
     MASS,
-    scales,
-    pbkrtest
+    scales
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
