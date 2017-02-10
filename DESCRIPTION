@@ -9,16 +9,20 @@ Description: The functions for Predictive approaches in Psychology
 License: GPL-3
 LazyData: TRUE
 Depends: 
-    R (>= 3.1.0)
-Imports: 
+    R (>= 3.1.0),
     plyr,
     ggplot2,
     caret,
     rpart,
     e1071,
-    mclust
+    mclust,
+    MASS
+Imports: 
+    scales
+    
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
 Repository: CRAN
+Remotes: tidyverse/ggplot2
