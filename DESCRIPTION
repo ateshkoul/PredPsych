@@ -26,7 +26,8 @@ Imports:
     tibble,
     assertthat,
     ModelMetrics,
-    iterators
+    iterators,
+    gtable
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
