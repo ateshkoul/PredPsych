@@ -25,4 +25,4 @@ Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
 Repository: CRAN
-Remotes: tidyverse/ggplot2
+
