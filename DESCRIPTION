@@ -16,10 +16,7 @@ Imports:
     caret,
     rpart,
     e1071,
-    mclust,
-    MASS,
-    party,
-    randomForest
+    mclust
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
