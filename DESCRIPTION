@@ -5,18 +5,21 @@ Version: 0.1
 Date: 2015-06-18
 Author: Atesh Koul
 Maintainer: Atesh Koul <atesh.koul@iit.it>
-Description: The functions for Predictive Approaches in Psychology
+Description: The Functions for Predictive Approaches in Psychology.
 License: GPL-3
 LazyData: TRUE
-Depends: 
+Depends:
     R (>= 3.1.0)
-Imports: 
-   plyr,
+Imports:
+    plyr,
     ggplot2,
     caret,
     rpart,
     e1071,
-    mclust
+    mclust,
+    MASS,
+    party,
+    randomForest
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown
