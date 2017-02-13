@@ -2,7 +2,7 @@ Package: PredPsych
 Type: Package
 Title: Generic Package for Predictive Approaches in Psychology
 Version: 0.1
-Date: 2015-06-18
+Date: 2017-02-13
 Author: Atesh Koul
 Maintainer: Atesh Koul <atesh.koul@iit.it>
 Description: The Functions for Predictive Approaches in Psychology.
