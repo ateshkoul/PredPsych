@@ -6,7 +6,7 @@
 \usage{
 LinearDA(Data, classCol, selectedCols, CV = FALSE, cvFraction = 0.8,
   extendedResults = FALSE, SetSeed = TRUE, cvType = "createDataPartition",
-  k = 10, ...)
+  k = 10, foldSep, silent = FALSE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
@@ -26,9 +26,14 @@ If TRUE, posterior probabilites are present with the model}
 set false only for permutation tests}
 
 \item{cvType}{(optional) (string) type of cross validation to perform if cvType = 'createDataPartition' a portion of data (cvFraction) is used, 
-For cvType = 'Folds', a n-fold cross validation is performed.}
+For cvType = 'Folds', a n-fold cross validation is performed. For cvType = "LOSO" a Leave-one-subject out cross-validation 
+is performed}
 
 \item{k}{(optional) (numeric) the number of folds to use in case cvType = 'Folds'}
+
+\item{foldSep}{(numeric) mandatory column number for Leave-one-subject out cross-validation.}
+
+\item{silent}{(optional) (logical) whether to print messages during classification}
 
 \item{...}{(optional) additional arguments for the function}
 }
@@ -62,6 +67,11 @@ selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 LDAModel <- LinearDA(Data = KinData, classCol = 1,
  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
 CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
+
+# For a 10 fold cross-validation without outputting messages 
+LDAModel <-  LinearDA(Data = Data, classCol = 1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+extendedResults = FALSE,cvType = "Folds",k=10,silent = T)
 
 }
 \author{

@@ -31,8 +31,9 @@
 #' model <- DTModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],
 #' classCol=1,tree='CARTHF')
 #' 
-#' @import caret rpart  party
-#' @importFrom randomForest randomForest
+#' @import caret rpart party
+#' @importFrom randomForest randomForest importance
+#' @importFrom graphics plot text
 #'@author
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'

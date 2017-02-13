@@ -45,6 +45,8 @@ DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,..
            if(plot & any(!is.na(outcome))) {
              # update data for plotting
              #library(ggplot2)
+             # to avoid R CMD check note
+             Dimension_1 <- Dimension_2 <- NULL
              plotData <- data.frame(Dimension_1 = multiDimScale[,1],Dimension_2=multiDimScale[,2],outcome = factor(outcome))
              p <- ggplot(plotData,aes(x=Dimension_1,y=Dimension_2,col=outcome))+
                geom_point()+theme_bw(base_size = 18)+scale_color_grey(end = 0.7)+

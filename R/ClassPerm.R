@@ -94,7 +94,9 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,plot=T
   # also so that we don't get same results over and over again if
   # we set seed in the classification function
   #set.seed(111)
-
+  
+  # to avoid the note in R CMD check
+  nullAcc <- NULL
   distNull <- data.frame(nullAcc=unlist(rlply(nSims, permutator(Data,classCol,selectedCols),.progress = progress_time())))
   p_value = sum(distNull$nullAcc >= actualAcc)/nSims
   print(paste0('The p-value of the permutation testing is ',p_value))
