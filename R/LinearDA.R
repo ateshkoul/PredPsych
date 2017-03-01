@@ -51,7 +51,7 @@
 #'# For a 10 fold cross-validation without outputting messages 
 #'LDAModel <-  LinearDA(Data = KinData, classCol = 1,
 #'selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-#'extendedResults = FALSE,cvType = "Folds",k=10,silent = T)
+#'extendedResults = FALSE,cvType = "Folds",k=10,silent = TRUE)
 #'
 #'@import MASS caret
 #'@author

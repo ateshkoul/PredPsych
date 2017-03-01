@@ -22,8 +22,9 @@
 #'
 #'@examples
 #'# perform a permutation testing for 10% of the kinematics movement data
-#'PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
-#'  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
+#'# not run
+#'# PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
+#'#  selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
 #'
 #'@import e1071 ggplot2 plyr caret
 #'
