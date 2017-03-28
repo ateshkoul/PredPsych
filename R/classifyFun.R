@@ -53,8 +53,8 @@ classifyFun <- function(Data,classCol,selectedCols,ranges=NULL,tune=FALSE,cost=1
 
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
 
-    # get the features
-  selectedColNames <- names(Data)[selectedCols]
+  # get the features:  in case u enter names of columns, it works anyways
+  ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
   # get feature columns without response
   featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
   predictorColNames <- names(Data)[classCol]
