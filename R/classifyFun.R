@@ -66,58 +66,61 @@ classifyFun <- function(Data,classCol,selectedCols,ranges=NULL,tune=FALSE,cost=1
   if(sum(is.na(Data[,predictorColNames]))>0) Data <- Data[!is.na(Data[,predictorColNames]),]
   # set seed; skip if explicitly is made false (e.g. in Permutation Testing)
   if(SetSeed)  set.seed(111)
-
-  if(tune) {
-    folds = 3
-    # use stratified cross validation instead
-    # divide the data into 3 parts:
-    # 1. for tuning parameters
-    # 2. for training model
-    # 3. for testing prediction (on a data that it has never seen ever)
-    #
-    # Keeping more for tuning
-    trainIndexOverall <- createFolds(Data[,classCol],list = FALSE,k = folds)
-    # leave first part for tuning the classifier
-    tuneTrainData <- Data[trainIndexOverall==1,]
-    ModelTrainData <- Data[trainIndexOverall==2,]
-    ModelTestData <- Data[trainIndexOverall==3,]
-    obj <- getTunedParam(tuneTrainData,classCol,classifierName,featureColNames,ranges)["best.parameters"]
-
-  } else{
-    folds = 2
-    trainIndexOverall <- createFolds(Data[,predictorColNames],list = FALSE,k = folds)
-    ModelTrainData <- Data[trainIndexOverall==1,]
-    ModelTestData <- Data[trainIndexOverall==2,]
-    obj <- data.frame(gamma=gamma,cost=cost)
-  }
-
-  kFold <- 10
-  #initialising vectors
-  acc <- rep(NA,kFold)
-  accTest <- rep(NA,kFold)
-
-  trainIndexModel <- createFolds(ModelTrainData[,predictorColNames],list = FALSE,k = kFold)
-
-  if(!silent){
-    print('Begining k-fold Classification')
-  }
   
-  
-  for (i in 1:kFold){
-    trainDataFold <- ModelTrainData[!trainIndexModel==i,]
-    testDataFold <- ModelTrainData[trainIndexModel==i,]
-
-    # the classifier has generic
-    # generic error function:
-    acc[i] = do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
-                                             featureColNames=featureColNames,expand.grid(obj),...)))[["acc"]]
-    accTest[i] = do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
-                                                 featureColNames=featureColNames,expand.grid(obj),...)))[["accTest"]]
-  }
-  if(!silent){
-    print(paste("Mean CV Accuracy",signif(mean(acc),2)))
-    print(paste("Mean Test Accuracy",signif(mean(accTest),2)))
-  }
+  switch(cvType,
+           Folds = {
+             if(tune) {
+               folds = 3
+               # use stratified cross validation instead
+               # divide the data into 3 parts:
+               # 1. for tuning parameters
+               # 2. for training model
+               # 3. for testing prediction (on a data that it has never seen ever)
+               #
+               # Keeping more for tuning
+               trainIndexOverall <- createFolds(Data[,classCol],list = FALSE,k = folds)
+               # leave first part for tuning the classifier
+               tuneTrainData <- Data[trainIndexOverall==1,]
+               ModelTrainData <- Data[trainIndexOverall==2,]
+               ModelTestData <- Data[trainIndexOverall==3,]
+               obj <- getTunedParam(tuneTrainData,classCol,classifierName,featureColNames,ranges)["best.parameters"]
+               
+             } else{
+               folds = 2
+               trainIndexOverall <- createFolds(Data[,predictorColNames],list = FALSE,k = folds)
+               ModelTrainData <- Data[trainIndexOverall==1,]
+               ModelTestData <- Data[trainIndexOverall==2,]
+               obj <- data.frame(gamma=gamma,cost=cost)
+             }
+             
+             kFold <- 10
+             #initialising vectors
+             acc <- rep(NA,kFold)
+             accTest <- rep(NA,kFold)
+             
+             trainIndexModel <- createFolds(ModelTrainData[,predictorColNames],list = FALSE,k = kFold)
+             
+             if(!silent){
+               print('Begining k-fold Classification')
+             }
+             
+             
+             for (i in 1:kFold){
+               trainDataFold <- ModelTrainData[!trainIndexModel==i,]
+               testDataFold <- ModelTrainData[trainIndexModel==i,]
+               
+               # the classifier has generic
+               # generic error function:
+               acc[i] = do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
+                                                     featureColNames=featureColNames,expand.grid(obj),...)))[["acc"]]
+               accTest[i] = do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
+                                                         featureColNames=featureColNames,expand.grid(obj),...)))[["accTest"]]
+             }
+             if(!silent){
+               print(paste("Mean CV Accuracy",signif(mean(acc),2)))
+               print(paste("Mean Test Accuracy",signif(mean(accTest),2)))
+             }
+           })
   
 
 
