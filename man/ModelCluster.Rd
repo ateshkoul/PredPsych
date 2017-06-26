@@ -4,7 +4,7 @@
 \alias{ModelCluster}
 \title{Model based Clustering}
 \usage{
-ModelCluster(Data, NewData = NULL, G, ...)
+ModelCluster(Data, NewData = NULL, G, silent = FALSE, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
@@ -12,6 +12,8 @@ ModelCluster(Data, NewData = NULL, G, ...)
 \item{NewData}{(optional) (dataframe) New Data frame for which the class membership is requested}
 
 \item{G}{(optional) (numeric) No. of components to verify}
+
+\item{silent}{(optional) (logical) whether to print messages or not}
 
 \item{...}{(optional) additional arguments for the function}
 }
@@ -34,11 +36,19 @@ with the highest evidence (as provided by the data).
 # clustering kinematics data at 10\% of movement
 # not run
 # cluster_time <- ModelCluster(KinData[,c(2,12,22,32,42,52,62,72,82,92,102,112)],G=1:12)
-
+# Output:
+# Performing Cluster analysis 
+# --cluster Results --
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
 \email{atesh.koul@iit.it}
+}
+\references{
+Han, J., Kamber, M., & Pei, J. (2012). Cluster Analysis. In Data Mining (pp. 443-495). Elsevier.
+
+Fraley, C., & Raftery, a E. (1998). How Many Clusters? Which Clustering Method? Answers Via Model-Based Cluster Analysis.
+The Computer Journal, 41(8), 578-588.
 }
 

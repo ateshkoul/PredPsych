@@ -8,6 +8,7 @@
 #' @param selectedCols  (optional)(numeric) which columns should be treated as data(features/columns) (defaults to all columns)
 #' @param outcome       (optional)(vector) optional vector for visualising plots
 #' @param plot          (optional)(logical) To plot or not to plot
+#' @param silent        (optional) (logical) whether to print messages or not
 #' @param ...           (optional) additional arguments for the function
 #' 
 #' @details 
@@ -31,9 +32,18 @@
 #'Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 #'
 #'\email{atesh.koul@@iit.it}
+#'
+#'@references 
+#'Bishop, C. M. (2006). Pattern Recognition and Machine Learning. (M. Jordan, J. Kleinberg, & B. Scholkopf, Eds.) 
+#'(1st ed.). Springer-Verlag New York.
+#'
+#'Cox, T. F., & Cox, M. A. A. (2000). Multidimensional scaling (Second ed.). Chapman & Hall/CRC.
+#'
 #' @export
-DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,...){
+DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,silent=FALSE,...){
   # if nothing specific is provided, default to all the columns
+  if(!silent) cat("\nPerforming Dimensionality Reduction analysis \n\n")
+  
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
   if(plot & any(is.na(outcome)))  cat("Perhaps you forgot the classCol vector \nPlease enter the classCol vector for the plot")
   

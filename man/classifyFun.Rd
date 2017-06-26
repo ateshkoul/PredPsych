@@ -4,9 +4,11 @@
 \alias{classifyFun}
 \title{Generic Classification Analyses}
 \usage{
-classifyFun(Data, classCol, selectedCols, ranges = NULL, tune = FALSE,
-  cost = 1, gamma = 0.5, classifierName = "svm",
-  genclassifier = Classifier.svm, silent = FALSE, SetSeed = TRUE, ...)
+classifyFun(Data, classCol, selectedCols, cvType, ntrainTestFolds, nTrainFolds,
+  modelTrainFolds, nTuneFolds, tuneFolds, foldSep, cvFraction, ranges = NULL,
+  tune = FALSE, cost = 1, gamma = 0.5, classifierName = "svm",
+  genclassifier, silent = FALSE, extendedResults = FALSE, SetSeed = TRUE,
+  NewData = NULL, ...)
 }
 \arguments{
 \item{Data}{(dataframe) dataframe of the data}
@@ -14,6 +16,29 @@ classifyFun(Data, classCol, selectedCols, ranges = NULL, tune = FALSE,
 \item{classCol}{(numeric) column number that contains the variable to be predicted}
 
 \item{selectedCols}{(optional) (numeric) all the columns of data that would be used either as predictor or as feature}
+
+\item{cvType}{(optional) (string) which type of cross-validation scheme to follow; One of the following values:
+\itemize{
+\item folds       =  k-fold cross-validation 
+\item LOSO        =  Leave-one-subject-out cross-validation
+\item holdout     =  (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+\item LOTO        =  Leave-one-trial out cross-validation.
+}}
+
+\item{ntrainTestFolds}{(optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset}
+
+\item{nTrainFolds}{(optional) (parameter for only k-fold cross-validation) No. of folds in which to further divide Training dataset}
+
+\item{modelTrainFolds}{=  (optional) (parameter for only k-fold cross-validation) specific folds from the first train/test split
+(ntrainTestFolds) to use for training}
+
+\item{nTuneFolds}{(optional) (parameter for only k-fold cross-validation) No. of folds for Tuning}
+
+\item{tuneFolds}{(optional) (parameter for only k-fold cross-validation) specific folds from the above nTuneFolds to use for tuning}
+
+\item{foldSep}{(numeric)  (parameter for only Leave-One_subject Out) mandatory column number for Leave-one-subject out cross-validation.}
+
+\item{cvFraction}{(optional) (numeric) Fraction of data to keep for training data}
 
 \item{ranges}{(optional) (list)  ranges for tuning support vector machine}
 
@@ -27,15 +52,21 @@ classifyFun(Data, classCol, selectedCols, ranges = NULL, tune = FALSE,
 
 \item{genclassifier}{(optional) (function or string) a classifier function or a name (e.g. Classifier.svm)}
 
-\item{silent}{(optional) (logical) whether to print messages on mean accuracy or not}
+\item{silent}{(optional) (logical) whether to print messages or not}
+
+\item{extendedResults}{(optional) (logical) Return extended results with model and other metrics}
 
 \item{SetSeed}{(optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
 set false only for permutation tests}
 
+\item{NewData}{(optional) (dataframe) New Data frame features for which the class membership is requested}
+
 \item{...}{(optional) additional arguments for the function}
 }
 \value{
-Outputs Crossvalidation accuracy \code{acc} and    Test accuracy \code{accTest}
+Depending upon \code{extendedResults}. \code{extendedResults}  = FALSE outputs Test accuracy \code{accTest} of discrimination; \code{extendedResults} = TRUE 
+outputs Test accuracy \code{accTest} of discrimination, \code{ConfMatrix} Confusion matrices and \code{classificationResults} list of the cross-validation results including the model 
+and  \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results
 }
 \description{
 function for performing generic classification Analysis
@@ -49,18 +80,55 @@ respective classes. If the data features are informative about the classes, a hi
 would be achieved.
 }
 \examples{
-#classification analysis with SVM
+# classification analysis with SVM
 Results <- classifyFun(Data = KinData,classCol = 1,
 selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
-# output
-# [1] "Begining k-fold Classification"
-# [1] "Mean CV Accuracy 0.66"
-# [1] "Mean Test Accuracy 0.62"
+# Output:
+# Performing Classification Analysis
+#
+# cvType was not specified, 
+#  Using default holdout Cross-validation 
+#
+# Using default holdout Cross-validation
+# 
+# genclassifier was not specified, 
+#   Using default value of Classifier.svm (genclassifier = Classifier.svm)"
+# 
+# cvFraction was not specified, 
+# Using default value of 0.8 (cvFraction = 0.8)
+# 
+# Proportion of Test/Train Data was :  0.2470588 
+# [1] "Test holdout Accuracy is  0.57"
+# holdout classification Analysis: 
+# cvFraction : 0.8 
+# Test Accuracy 0.65
+# *Legend:
+# cvFraction = Fraction of data to keep for training data 
+# Test Accuracy = Accuracy from the Testing dataset
+
+# Alternate uses:
+# perform a k-folds cross-validated classification analysis:
+Results <- classifyFun(Data = KinData,classCol = 1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),cvType = "folds")
+
+# use extendedResults as well as tuning
+Results <- classifyFun(Data = KinData,classCol = 1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+cvType = "folds",extendedResults = TRUE,tune=TRUE)
+
+
 
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
 \email{atesh.koul@iit.it}
+}
+\references{
+Duda, R. O., Hart, P. E., & Stork, D. G. (2000). Pattern Classification. Wiley-Interscience (Vol. 24).
+
+Vapnik, V. (1995). The Nature of statistical Learning Theory. Springer-Verlag New York.
+
+Hsu, C. C., Chang, C. C., & Lin, C. C. (2003). A practical guide to support vector classification, 1(1), 1-16.
 }
 

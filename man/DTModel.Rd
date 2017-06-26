@@ -4,7 +4,10 @@
 \alias{DTModel}
 \title{Generic Decision Tree Function}
 \usage{
-DTModel(Data, classCol, selectedCols, tree, ...)
+DTModel(Data, classCol, selectedCols, tree, cvType, nTrainFolds,
+  ntrainTestFolds, modelTrainFolds, foldSep, cvFraction,
+  extendedResults = FALSE, SetSeed = TRUE, silent = FALSE,
+  NewData = NULL, ...)
 }
 \arguments{
 \item{Data}{(dataframe) a data frame with regressors and response}
@@ -15,17 +18,47 @@ DTModel(Data, classCol, selectedCols, tree, ...)
 
 \item{tree}{which decision tree model to implement; One of the following values:
 \itemize{
-\item CART     =   Classification And Regression Tree; 
-\item CARTNAHF = Crossvalidated Half Model CART Tree removing missing values;
-\item CARTHF =   Crossvalidated Half Model CART Tree With missing values;
-\item CF =   Conditional inference framework Tree;
-\item RF =   Random Forest Tree;    
+\item CART        =   Classification And Regression Tree; 
+\item CARTNACV    =   Crossvalidated CART Tree removing missing values;
+\item CARTCV      =   Crossvalidated CART Tree With missing values;
+\item CF          =   Conditional inference framework Tree;
+\item RF          =   Random Forest Tree;    
 }}
+
+\item{cvType}{(optional) (string) which type of cross-validation scheme to follow - only in case of CARTCV or CARTNACV;
+                      One of the following values:
+\itemize{
+\item folds       =   k-fold cross-validation 
+\item LOSO        =   Leave-one-subject-out cross-validation
+\item holdout     =   (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+\item LOTO        =   Leave-one-trial out cross-validation.
+}}
+
+\item{nTrainFolds}{(optional) (parameter for only k-fold cross-validation) No. of folds in which to further divide Training dataset}
+
+\item{ntrainTestFolds}{(optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset}
+
+\item{modelTrainFolds}{=   (optional) (parameter for only k-fold cross-validation) specific folds from the first train/test split
+(ntrainTestFolds) to use for training}
+
+\item{foldSep}{(numeric)  (parameter for only Leave-One_subject Out) mandatory column number for Leave-one-subject out cross-validation.}
+
+\item{cvFraction}{(optional) (numeric) Fraction of data to keep for training data}
+
+\item{extendedResults}{(optional) (logical) Return extended results with model and other metrics}
+
+\item{SetSeed}{(optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results;}
+
+\item{silent}{(optional) (logical) whether to print messages or not}
+
+\item{NewData}{(optional) (dataframe) New Data frame features for which the class membership is requested}
 
 \item{...}{(optional) additional arguments for the function}
 }
 \value{
-model result for the input tree \code{Results}
+model result for the input tree \code{Results}  or Test accuracy \code{accTest}. If \code{extendedResults} = TRUE 
+outputs Test accuracy \code{accTest} of discrimination,\code{ConfMatrix} Confusion matrices and \code{fit} the model 
+and  \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results
 }
 \description{
 A simple function to create Decision Trees
@@ -38,17 +71,73 @@ In terms of input, DT  models can handle both continuous and categorical variabl
 as well as missing data. From the input data, DT  models build a set of logical "if ..then" rules
 that permit accurate prediction of the input cases.
 
+The function "rpart" handles the missing data by creating surrogate variables 
+instead of removing them entirely (Therneau, & Atkinson, 1997). 
+This could be useful in case the data contains multiple missing values. 
+
 Unlike regression methods like GLMs,  Decision Trees are more flexible and can model nonlinear interactions.
 }
 \examples{
 # generate a cart model for 10\% of the data with cross-validation
-model <- DTModel(Data = KinData[,c(1,2,12,22,32,42,52,62,72,82,92,102,112)],
-classCol=1,tree='CARTHF')
+model <- DTModel(Data = KinData,classCol=1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), tree='CART')
+# Output:
+# Performing Decision Tree Analysis 
+#
+# Generating Model Tree
+#
+# Performing holdout Cross-validation
+# 
+# cvFraction was not specified,
+#  Using default value of 0.8 (cvFraction = 0.8)"
+# 
+# Proportion of Test/Train Data was :  0.2488954 
+# --CART MOdel --
+# 
+# [1] "Test holdout Accuracy is  0.69"
+# holdout CART Analysis: 
+# cvFraction : 0.8 
+# Test Accuracy 0.69
+# *Legend:
+# cvFraction = Fraction of data to keep for training data 
+# Test Accuracy = Accuracy from the Testing dataset
+# [1] "done"
+
+# Alternate uses:  
+# holdout cross-validation with removing missing values
+model <- DTModel(Data = KinData,classCol=1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+tree='CARTNACV')
+
+# k-fold cross-validation with removing missing values
+model <- DTModel(Data = KinData,classCol=1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+tree='CARTNACV',cvType="folds")
+
+# holdout cross-validation without removing missing values
+model <- DTModel(Data = KinData,classCol=1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+tree='CARTCV')
+
+# k-fold cross-validation without removing missing values
+model <- DTModel(Data = KinData,classCol=1,
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+tree='CARTCV',cvType="folds")
 
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
 \email{atesh.koul@iit.it}
+}
+\references{
+Hastie, T., Tibshirani, R., & Friedman, J. (2009). The Elements of Statistical Learning. 
+Springer Series in Statistics (2nd ed., Vol. 1). New York, NY: Springer New York.
+
+Terry Therneau, Beth Atkinson and Brian Ripley (2015). rpart: Recursive Partitioning and Regression Trees. 
+R package version 4.1-10.  https://CRAN.R-project.org/package=rpart
+
+Therneau, T. M., & Atkinson, E. J. (1997). An introduction to recursive partitioning using the RPART routines (Vol. 61, p. 452).
+Mayo Foundation: Technical report.
 }
 

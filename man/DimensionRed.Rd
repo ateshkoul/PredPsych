@@ -5,7 +5,7 @@
 \title{Generic Dimensionallity Reduction Function}
 \usage{
 DimensionRed(Data, method = "MDS", selectedCols, outcome = NA,
-  plot = FALSE, ...)
+  plot = FALSE, silent = FALSE, ...)
 }
 \arguments{
 \item{Data}{(dataframe)  a data frame with variable/feature columns}
@@ -17,6 +17,8 @@ DimensionRed(Data, method = "MDS", selectedCols, outcome = NA,
 \item{outcome}{(optional)(vector) optional vector for visualising plots}
 
 \item{plot}{(optional)(logical) To plot or not to plot}
+
+\item{silent}{(optional) (logical) whether to print messages or not}
 
 \item{...}{(optional) additional arguments for the function}
 }
@@ -44,5 +46,11 @@ outcome = KinData[,"Object.Size"],plot = TRUE)
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
 \email{atesh.koul@iit.it}
+}
+\references{
+Bishop, C. M. (2006). Pattern Recognition and Machine Learning. (M. Jordan, J. Kleinberg, & B. Scholkopf, Eds.) 
+(1st ed.). Springer-Verlag New York.
+
+Cox, T. F., & Cox, M. A. A. (2000). Multidimensional scaling (Second ed.). Chapman & Hall/CRC.
 }
 

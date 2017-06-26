@@ -4,9 +4,9 @@
 \alias{LinearDA}
 \title{Cross-validated Linear Discriminant Analysis}
 \usage{
-LinearDA(Data, classCol, selectedCols, CV = FALSE, cvFraction = 0.8,
-  extendedResults = FALSE, SetSeed = TRUE, cvType = "createDataPartition",
-  k = 10, foldSep, silent = FALSE, ...)
+LinearDA(Data, classCol, selectedCols, cvType, nTrainFolds, ntrainTestFolds,
+  modelTrainFolds, foldSep, CV = FALSE, cvFraction, extendedResults = FALSE,
+  SetSeed = TRUE, silent = FALSE, NewData = NULL, ...)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
@@ -15,32 +15,44 @@ LinearDA(Data, classCol, selectedCols, CV = FALSE, cvFraction = 0.8,
 
 \item{selectedCols}{(optional) (numeric)  all the columns of data that would be used either as predictor or as feature}
 
+\item{cvType}{(optional) (string) which type of cross-validation scheme to follow; One of the following values:
+\itemize{
+\item folds        =   k-fold cross-validation 
+\item LOSO         =   Leave-one-subject-out cross-validation
+\item holdout      =   (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+\item LOTO         =   Leave-one-trial out cross-validation.      
+}}
+
+\item{nTrainFolds}{=    (optional) (parameter for only k-fold cross-validation) No. of folds in which to further divide Training dataset}
+
+\item{ntrainTestFolds}{=    (optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset}
+
+\item{modelTrainFolds}{=    (optional) (parameter for only k-fold cross-validation) specific folds from the first train/test split
+(ntrainTestFolds) to use for training}
+
+\item{foldSep}{(numeric)  (parameter for only Leave-One_subject Out) mandatory column number for Leave-one-subject out cross-validation.}
+
 \item{CV}{(optional) (logical) perform Cross validation of training dataset? 
 If TRUE, posterior probabilites are present with the model}
 
 \item{cvFraction}{(optional) (numeric) Fraction of data to keep for training data}
 
-\item{extendedResults}{(optional) (logical) Return extended results with model?}
+\item{extendedResults}{(optional) (logical) Return extended results with model  and other metrics}
 
 \item{SetSeed}{(optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
 set false only for permutation tests}
 
-\item{cvType}{(optional) (string) type of cross validation to perform if cvType = 'createDataPartition' a portion of data (cvFraction) is used, 
-For cvType = 'Folds', a n-fold cross validation is performed. For cvType = "LOSO" a Leave-one-subject out cross-validation 
-is performed}
+\item{silent}{(optional) (logical) whether to print messages or not}
 
-\item{k}{(optional) (numeric) the number of folds to use in case cvType = 'Folds'}
-
-\item{foldSep}{(numeric) mandatory column number for Leave-one-subject out cross-validation.}
-
-\item{silent}{(optional) (logical) whether to print messages during classification}
+\item{NewData}{(optional) (dataframe) New Data frame features for which the class membership is requested}
 
 \item{...}{(optional) additional arguments for the function}
 }
 \value{
-Depending upon \code{extendedResults}. \code{extendedResults} FALSE =  \code{Acc} of discrimination () \code{extendedResults} TRUE 
-\code{Acc} Accuracy of discrimination and \code{fitLDA} the fit cross-validated LDA model. If \code{CV} = TRUE , 
-Posterior probabilities are generated and stored in the model
+Depending upon \code{extendedResults}. \code{extendedResults}  = FALSE outputs Test accuracy \code{accTest} of discrimination; \code{extendedResults} = TRUE 
+outputs Test accuracy \code{accTest} of discrimination, \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results,\code{ConfMatrix} Confusion matrices
+and \code{fitLDA} the fit cross-validated LDA model. If \code{CV} = TRUE , 
+Posterior probabilities are generated and stored in the model.
 }
 \description{
 A simple function to perform cross-validated Linear Discriminant Analysis
@@ -57,26 +69,51 @@ a single new composite variable, the discriminant function, is produced (for det
 # simple model with data partition of 80\% and no extended results 
 LDAModel <- LinearDA(Data = KinData, classCol = 1, 
 selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
-#outout
-#       Predicted
-#Actual  1  2
-#1 51 32
-#2 40 45
-#"The accuracy of discrimination was 0.57"
+# Output:
+#
+# Performing Linear Discriminant Analysis
+#
+# cvType was not specified. 
+#  Using default holdout Cross-validation 
+#
+# Performing holdout Cross-validation
+# 
+# cvFraction was not specified,
+#  Using default value of 0.8 (80\%) fraction for training (cvFraction = 0.8)
+# 
+# Proportion of Test/Train Data was :  0.2470588 
+# Predicted
+# Actual  1  2
+# 1 51 32
+# 2 40 45
+# [1] "Test holdout Accuracy is 0.57"
+# holdout LDA Analysis: 
+# cvFraction : 0.8 
+# Test Accuracy 0.57
+# *Legend:
+# cvFraction = Fraction of data to keep for training data 
+# Test Accuracy = mean accuracy from the Testing dataset
 
+# alt uses:
 LDAModel <- LinearDA(Data = KinData, classCol = 1,
- selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
 CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
 
 # For a 10 fold cross-validation without outputting messages 
 LDAModel <-  LinearDA(Data = KinData, classCol = 1,
 selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-extendedResults = FALSE,cvType = "Folds",k=10,silent = TRUE)
+extendedResults = FALSE,cvType = "folds",nTrainFolds=10,silent = TRUE)
 
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
 \email{atesh.koul@iit.it}
+}
+\references{
+Fisher, R. A. (1936). The Use of Multiple Measurements in Taxonomic Problems. Annals of Eugenics, 7(2), 179-188.
+
+Rao, C. (1948). The Utilization of Multiple Measurements in Problems of Biological Classification. 
+In Journal of the Royal Statistical Society. Series B (Methodological) (Vol. 10, pp. 159-203).
 }
 
