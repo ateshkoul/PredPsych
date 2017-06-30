@@ -128,7 +128,7 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
   predictorColNames <- names(Data)[classCol]
   
-  Data = Data[,selectedCols]
+  #Data = Data[,selectedCols]
   Data[,predictorColNames] = factor(Data[,predictorColNames])
   
   # if predictor has missing, remove those columns
