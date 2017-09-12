@@ -7,9 +7,9 @@
 #' @param selectedCols      (optional) (numeric) all the columns of data that would be used either as predictor or as feature
 #' @param cvType            (optional) (string) which type of cross-validation scheme to follow; One of the following values:
 #'      \itemize{
-#'      \item folds       =  k-fold cross-validation 
+#'      \item folds       =  (default) k-fold cross-validation 
 #'      \item LOSO        =  Leave-one-subject-out cross-validation
-#'      \item holdout     =  (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+#'      \item holdout     =  holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 #'      \item LOTO        =  Leave-one-trial out cross-validation.
 #'      }
 #' @param ntrainTestFolds    (optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset
@@ -43,29 +43,27 @@
 #' 
 #' 
 #' @return Depending upon \code{extendedResults}. \code{extendedResults}  = FALSE outputs Test accuracy \code{accTest} of discrimination; \code{extendedResults} = TRUE 
-#' outputs Test accuracy \code{accTest} of discrimination, \code{ConfMatrix} Confusion matrices and \code{classificationResults} list of the cross-validation results including the model 
+#' outputs Test accuracy \code{accTest} of discrimination, \code{accTestRun} discrimination for each run in case of cvType as LOSO,LOTO or Folds \code{ConfMatrix} Confusion matrices and \code{classificationResults} list of the cross-validation results including the model 
 #' and  \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results  
 #'
 #' @examples
 #' # classification analysis with SVM
 #' Results <- classifyFun(Data = KinData,classCol = 1,
-#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),cvType="holdout")
+#' 
 #' # Output:
+#' 
 #' # Performing Classification Analysis
 #' #
-#' # cvType was not specified, 
-#' #  Using default holdout Cross-validation 
-#' #
-#' # Using default holdout Cross-validation
-#' # 
+#' # Performing holdout Cross-validation
 #' # genclassifier was not specified, 
 #' #   Using default value of Classifier.svm (genclassifier = Classifier.svm)"
 #' # 
 #' # cvFraction was not specified, 
-#' # Using default value of 0.8 (cvFraction = 0.8)
+#' #  Using default value of 0.8 (cvFraction = 0.8)
 #' # 
 #' # Proportion of Test/Train Data was :  0.2470588 
-#' # [1] "Test holdout Accuracy is  0.57"
+#' # [1] "Test holdout Accuracy is  0.65"
 #' # holdout classification Analysis: 
 #' # cvFraction : 0.8 
 #' # Test Accuracy 0.65
@@ -102,8 +100,8 @@
 classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrainFolds,modelTrainFolds,nTuneFolds,tuneFolds,foldSep,cvFraction,
                         ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier,silent=FALSE,extendedResults = FALSE,
                         SetSeed=TRUE,NewData=NULL,...){
-  # a simplistic k-fold crossvalidation
-  # For cross validation
+
+  
   #library(e1071)
   #library(caret)
   # dont use a constant set.seed with permutation testing
@@ -111,8 +109,8 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   #set.seed(123)
   
   if(missing(cvType)){
-    if(!silent) cat("cvType was not specified, \n Using default holdout Cross-validation \n")
-    cvType <- "holdout"
+    if(!silent) cat("cvType was not specified, \n Using default k-folds Cross-validation \n")
+    cvType <- "folds"
   }
   
   if(!(cvType %in% c("holdout","folds","LOSO","LOTO"))) stop(cat("\n cvType is not one of holdout,folds or LOSO. You provided",cvType))
@@ -124,13 +122,26 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   
   # get the features:  in case u enter names of columns, it works anyways
   ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
+  
+  # createDataPartition has different behavior for numeric and factor vectors
+  # the random sampling is done within the levels of y when y is a factor in an 
+  # attempt to balance the class distributions within the splits.
+  # 
+  # 
+  # For numeric y, the sample is split into groups sections based on percentiles 
+  # and sampling is done within these subgroups (see ?createDataPartition for more details)
+  # 
+  # Make the outcome factor anyways
+  Data[,classCol] <- factor(Data[,classCol])
+  
+  
   # get feature columns without response
   featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
   predictorColNames <- names(Data)[classCol]
   
-  #Data = Data[,selectedCols]
-  Data[,predictorColNames] = factor(Data[,predictorColNames])
   
+  
+
   # if predictor has missing, remove those columns
   if(sum(is.na(Data[,predictorColNames]))>0) Data <- Data[!is.na(Data[,predictorColNames]),]
   # set seed; skip if explicitly is made false (e.g. in Permutation Testing)
@@ -218,7 +229,8 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
            
            #initialising vectors
            acc <- rep(NA,nTrainFolds)
-           accTest <- rep(NA,nTrainFolds)
+           # container to collect test accuracy from multiple runs
+           accTestRun <- rep(NA,nTrainFolds)
            
            trainIndexModel <- createFolds(ModelTrainData[,predictorColNames],list = FALSE,k = nTrainFolds)
            
@@ -239,10 +251,10 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
              classificationResults[[i]] <- do.call(genclassifier,c(list(trainData=trainDataFold,testData=testDataFold,ModelTestData=ModelTestData,predictorColNames=predictorColNames,
                                                                         featureColNames=featureColNames,expand.grid(obj),...)))
              acc[i] = classificationResults[[i]][["acc"]]
-             accTest[i] = classificationResults[[i]][["accTest"]]
+             accTestRun[i] = classificationResults[[i]][["accTest"]]
              ConfMatrix[[i]] <- classificationResults[[i]][["ConfMatrix"]]
            }
-           accTest <- mean(accTest,na.rm=T)
+           accTest <- mean(accTestRun,na.rm=T)
            
            if(!silent){
              print(paste("Mean CV Accuracy",signif(mean(acc),2)))
@@ -250,7 +262,7 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
              
              # print parameters used
              cat("k-fold classification Analysis:",'\nntrainTestFolds :', ntrainTestFolds,'\nmodelTrainFolds',modelTrainFolds,
-                 "\nnTrainFolds:",nTrainFolds,"\nTest Accuracy",signif(mean(accTest),2))
+                 "\nnTrainFolds:",nTrainFolds,"\nTest Accuracy",signif(accTest,2))
              cat("\n*Legend:\nntrainTestFolds = No. of folds for training and testing dataset",
                  "\nmodelTrainFolds = Specific folds from the above nTrainFolds to use for training",
                  "\nnTrainFolds = No. of folds in which to further divide Training dataset",
@@ -276,7 +288,7 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
            
            Subs <- unique(Data[,foldSep])
            obj <- data.frame(gamma=gamma,cost=cost)
-           accTest <- rep(NA,length(Subs))
+           accTestRun <- rep(NA,length(Subs))
            
            # define the holder for classification results
            classificationResults <- list()
@@ -289,14 +301,14 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
              
              classificationResults[[i]] <- do.call(genclassifier,c(list(trainData=trainDataSub,testData=testDataSub,predictorColNames=predictorColNames,
                                                        featureColNames=featureColNames,expand.grid(obj),...)))
-             accTest[i] <- classificationResults[[i]][["accTest"]]
+             accTestRun[i] <- classificationResults[[i]][["accTest"]]
              ConfMatrix[[i]] <- classificationResults[[i]][["ConfMatrix"]]
              
            }
-           if(!silent) print(paste("Mean Test Leave-one-Subject-out Accuracy is ",signif(mean(accTest),2)))
            
-           accTest <- mean(accTest,na.rm=T)
+           accTest <- mean(accTestRun,na.rm=TRUE)
            if(!silent){
+             print(paste("Mean Test Leave-one-Subject-out Accuracy is ",signif(accTest,2)))
              # print parameters used
              cat("leave-one-subject-out classification Analysis:",'\nnSubs :', length(Subs),"\nTest Accuracy",signif(accTest,2))
              cat("\n*Legend:\nnSubs = No. of Subjects in the data",
@@ -332,7 +344,7 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
            
            accTest <- classificationResults[["accTest"]]
            ConfMatrix <- classificationResults[["ConfMatrix"]]
-           
+           accTestRun <- NULL
            if(!silent){
              print(paste("Test holdout Accuracy is ",signif(accTest,2)))
              cat("holdout classification Analysis:",'\ncvFraction :', cvFraction,"\nTest Accuracy",signif(mean(accTest),2))
@@ -358,7 +370,7 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
            
            index <- createFolds(Data[,classCol],k=nrow(Data),list=FALSE)
            obj <- data.frame(gamma=gamma,cost=cost)
-           accTest <- vector()
+           accTestRun <- vector()
            classificationResults <- list()
            ConfMatrix <- list()
            for(i in seq_along(index)){
@@ -367,12 +379,12 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
              
              classificationResults[[i]] <- do.call(genclassifier,c(list(trainData=DataTrain,testData=DataTest,predictorColNames=predictorColNames,
                                                                         featureColNames=featureColNames,expand.grid(obj),...)))
-             accTest[i] <- classificationResults[[i]][["accTest"]]
+             accTestRun[i] <- classificationResults[[i]][["accTest"]]
              ConfMatrix[[i]] <- classificationResults[[i]][["ConfMatrix"]]
              
            }
            # no sense in getting an LDA model from a specific model
-           accTest <- mean(accTest)
+           accTest <- mean(accTestRun,na.rm = TRUE)
            
            
            if(!silent){
@@ -396,7 +408,7 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   
   
   if(extendedResults){
-    Results <- list(classificationResults = classificationResults,accTest = accTest,ConfMatrix=ConfMatrix,ConfusionMatrixResults=ConfusionMatrixResults)
+    Results <- list(classificationResults = classificationResults,accTest = accTest,ConfMatrix=ConfMatrix,ConfusionMatrixResults=ConfusionMatrixResults,accTestRun = accTestRun)
     return(Results)
   }else return(accTest)
 }

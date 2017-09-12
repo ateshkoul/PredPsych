@@ -25,13 +25,11 @@
 #' # perform a permutation testing for 10% of the kinematics movement data#' 
 #' # not run
 #' # PermutationResult <- ClassPerm(Data = KinData, classCol = 1,
-#' # selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000)
+#' # selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), nSims = 1000,cvType = "holdout")
 #' # Output:
 #' # Performing Permutation Analysis for Classification
 #' #
 #' # Performing Cross-validation
-#' # cvType was not specified, 
-#' #  Using default holdout Cross-validation 
 #' #
 #' # Performing holdout Cross-validation 
 #' # genclassifier was not specified, 

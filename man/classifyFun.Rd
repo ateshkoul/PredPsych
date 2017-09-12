@@ -19,9 +19,9 @@ classifyFun(Data, classCol, selectedCols, cvType, ntrainTestFolds, nTrainFolds,
 
 \item{cvType}{(optional) (string) which type of cross-validation scheme to follow; One of the following values:
 \itemize{
-\item folds       =  k-fold cross-validation 
+\item folds       =  (default) k-fold cross-validation 
 \item LOSO        =  Leave-one-subject-out cross-validation
-\item holdout     =  (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+\item holdout     =  holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 \item LOTO        =  Leave-one-trial out cross-validation.
 }}
 
@@ -65,7 +65,7 @@ set false only for permutation tests}
 }
 \value{
 Depending upon \code{extendedResults}. \code{extendedResults}  = FALSE outputs Test accuracy \code{accTest} of discrimination; \code{extendedResults} = TRUE 
-outputs Test accuracy \code{accTest} of discrimination, \code{ConfMatrix} Confusion matrices and \code{classificationResults} list of the cross-validation results including the model 
+outputs Test accuracy \code{accTest} of discrimination, \code{accTestRun} discrimination for each run in case of cvType as LOSO,LOTO or Folds \code{ConfMatrix} Confusion matrices and \code{classificationResults} list of the cross-validation results including the model 
 and  \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results
 }
 \description{
@@ -82,23 +82,21 @@ would be achieved.
 \examples{
 # classification analysis with SVM
 Results <- classifyFun(Data = KinData,classCol = 1,
-selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),cvType="holdout")
+
 # Output:
+
 # Performing Classification Analysis
 #
-# cvType was not specified, 
-#  Using default holdout Cross-validation 
-#
-# Using default holdout Cross-validation
-# 
+# Performing holdout Cross-validation
 # genclassifier was not specified, 
 #   Using default value of Classifier.svm (genclassifier = Classifier.svm)"
 # 
 # cvFraction was not specified, 
-# Using default value of 0.8 (cvFraction = 0.8)
+#  Using default value of 0.8 (cvFraction = 0.8)
 # 
 # Proportion of Test/Train Data was :  0.2470588 
-# [1] "Test holdout Accuracy is  0.57"
+# [1] "Test holdout Accuracy is  0.65"
 # holdout classification Analysis: 
 # cvFraction : 0.8 
 # Test Accuracy 0.65

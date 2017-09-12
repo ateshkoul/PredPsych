@@ -11,9 +11,9 @@
 #'                             
 #' @param cvType               (optional) (string) which type of cross-validation scheme to follow; One of the following values:
 #'      \itemize{
-#'      \item folds        =   k-fold cross-validation 
+#'      \item folds        =   (default) k-fold cross-validation 
 #'      \item LOSO         =   Leave-one-subject-out cross-validation
-#'      \item holdout      =   (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+#'      \item holdout      =   holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 #'      \item LOTO         =   Leave-one-trial out cross-validation.      
 #'      }
 #' @param ntrainTestFolds =    (optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset
@@ -44,15 +44,13 @@
 #'
 #'  
 #' @examples
-#' # simple model with data partition of 80% and no extended results 
+#' # simple model with holdout data partition of 80% and no extended results 
 #' LDAModel <- LinearDA(Data = KinData, classCol = 1, 
-#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),cvType="holdout")
 #' # Output:
 #' #
 #' # Performing Linear Discriminant Analysis
 #' #
-#' # cvType was not specified. 
-#' #  Using default holdout Cross-validation 
 #' #
 #' # Performing holdout Cross-validation
 #' # 
@@ -73,9 +71,10 @@
 #' # Test Accuracy = mean accuracy from the Testing dataset
 #' 
 #' # alt uses:
+#' # holdout cross-validation with 80% training data
 #' LDAModel <- LinearDA(Data = KinData, classCol = 1,
 #' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-#' CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
+#' CV=FALSE,cvFraction = 0.8,extendedResults = TRUE,cvType="holdout")
 #'
 #' # For a 10 fold cross-validation without outputting messages 
 #' LDAModel <-  LinearDA(Data = KinData, classCol = 1,
@@ -107,8 +106,8 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
   
   
   if(missing(cvType)){
-    if(!silent) cat("cvType was not specified, \n Using default holdout Cross-validation \n")
-    cvType <- "holdout"
+    if(!silent) cat("cvType was not specified, \n Using default k-folds Cross-validation \n")
+    cvType <- "folds"
   }
   
   if(!(cvType %in% c("holdout","folds","LOSO","LOTO"))) stop(cat("\n cvType is not one of holdout,folds or LOSO. You provided",cvType))
@@ -126,9 +125,18 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
   selectedColNames <- names(Data)[selectedCols]
   
-
-  
+  # createDataPartition has different behavior for numeric and factor vectors
+  # the random sampling is done within the levels of y when y is a factor in an 
+  # attempt to balance the class distributions within the splits.
+  # 
+  # 
+  # For numeric y, the sample is split into groups sections based on percentiles 
+  # and sampling is done within these subgroups (see ?createDataPartition for more details)
+  # 
+  # Make the outcome factor anyways
   Data[,classCol] <- factor(Data[,classCol])
+  
+  
   switch(cvType,
          folds = {
            if(!silent) cat("\nPerforming k-fold Cross-validation \n\n")
@@ -162,7 +170,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
            
            #index <- createFolds(Data[,classCol],k,list = F)
            Foldacc <- rep(NA,nTrainFolds)
-           FoldaccTest <- rep(NA,nTrainFolds)
+           accTestRun <- rep(NA,nTrainFolds)
            ConfMatrix <- list()
            for (i in 1:nTrainFolds){
              trainDataFold <- ModelTrainData[trainIndexModel!=i,]
@@ -176,13 +184,13 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
              
              predictedTest <- predict(fit,newdata=ModelTestData[,featureColNames])
              truthTest <- ModelTestData[,classCol]
-             FoldaccTest[i] <- sum(1 * (predictedTest$class==ModelTestData[,classCol]))/length(predictedTest$class)
+             accTestRun[i] <- sum(1 * (predictedTest$class==ModelTestData[,classCol]))/length(predictedTest$class)
              ConfMatrix[[i]] <- confusionMatrix(truthTest,predictedTest$class)
              
              }
            # no sense in getting model from cross-validation
            fit <- NULL
-           accTest <- mean(FoldaccTest,na.rm=T)
+           accTest <- mean(accTestRun,na.rm=T)
            
            if(!silent){
              print(table(truthTest,predictedTest$class,dnn = c("Actual","Predicted")))
@@ -190,7 +198,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
              
              print("Test Accuracies")
              print(table(truthTest,predictedTest$class,dnn = c("Actual","Predicted")))
-             print(paste("The accuracy of discrimination was",signif(mean(FoldaccTest,na.rm=T),2)))
+             print(paste("The accuracy of discrimination was",signif(accTest,2)))
              # print parameters used
              cat("k-fold LDA Analysis:",'\nntrainTestFolds :', ntrainTestFolds,'\nmodelTrainFolds',modelTrainFolds,
                  "\nnTrainFolds:",nTrainFolds,"\nTest Accuracy",signif(mean(accTest),2))
@@ -208,7 +216,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
            featureColNames <- selectedColNames[!selectedColNames %in% c(names(Data)[classCol],names(Data[foldSep]))]
            
            Subs <- unique(Data[,foldSep])
-           accTest <- rep(NA,length(Subs))
+           accTestRun <- rep(NA,length(Subs))
            ConfMatrix <- list()
            
            for (i in 1:length(Subs)){
@@ -220,12 +228,13 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
              
              predictedTest <- predict(fit,newdata=testData[,featureColNames])
              truthTest <- testData[,classCol]
-             accTest[i] <- sum(1 * (predictedTest$class==testData[,classCol]))/length(predictedTest$class)
+             accTestRun[i] <- sum(1 * (predictedTest$class==testData[,classCol]))/length(predictedTest$class)
              ConfMatrix[[i]] <- confusionMatrix(truthTest,predictedTest$class)
              
              if(!silent){
-               print(table(truthTest,predictedTest$class,dnn = c("Actual","Predicted")))
-               print(paste("The accuracy of discrimination was",signif(mean(accTest,na.rm=T),2)))
+               # no need to pprint confusion matrices for each run
+               #print(table(truthTest,predictedTest$class,dnn = c("Actual","Predicted")))
+               #print(paste("The accuracy of discrimination in this run was",signif(mean(accTest[i],na.rm=T),2)))
                # print the confusion matrix
                # confusionMatrix(table(truth,predicted$class))
              }
@@ -236,7 +245,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
            
            # no sense in getting model from cross-validation
            fit <- NULL
-           accTest <- mean(accTest,na.rm=T)
+           accTest <- mean(accTestRun,na.rm=T)
            if(!silent){
              # print parameters used
              cat("leave-one-subject-out LDA Analysis:",'\nnSubs :', length(Subs),"\nTest Accuracy",signif(accTest,2))
@@ -273,7 +282,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
              fit <- list(fit = fit,TestTruth = truthTest, TestPredicted = predictedTest)
              accTest <- sum(1 * (predictedTest$class==DataTest[,classCol]))/length(predictedTest$class)
              ConfMatrix <- confusionMatrix(truthTest,predictedTest$class)
-             
+             accTestRun <- NULL
              if(!silent){
                
                print(table(truthTest,predictedTest$class,dnn = c("Actual","Predicted")))
@@ -294,7 +303,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
            
            
            index <- createFolds(Data[,classCol],k=nrow(Data),list=FALSE)
-           acc <- vector()
+           accTestRun <- vector()
            ConfMatrix <- list()
            for(i in seq_along(index)){
              DataTrain <- Data[-i,]
@@ -303,12 +312,12 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
              predictedTest <- predict(fit,newdata=DataTest[,featureColNames])
              truthTest <- DataTest[,classCol]
              #print(table(predicted$class,DataTest[,predictorCol]))
-             acc[i] <- sum(1 * (predictedTest$class==DataTest[,classCol]))/length(predictedTest$class)
+             accTestRun[i] <- sum(1 * (predictedTest$class==DataTest[,classCol]))/length(predictedTest$class)
              ConfMatrix[[i]] <- confusionMatrix(truthTest,predictedTest$class)
            }
            # no sense in getting model from cross-validation
            fit <- NULL
-           accTest <- mean(acc)
+           accTest <- mean(accTestRun,na.rm = TRUE)
            
            if(!silent){
              print(paste("Test LOTO classification Accuracy is ",signif(accTest,2)))
@@ -329,7 +338,7 @@ LinearDA <- function(Data,classCol,selectedCols,cvType,nTrainFolds,ntrainTestFol
   }
   
   if(extendedResults){
-    ResultsLDA <- list(fitLDA = fit,accTest = accTest,ConfMatrix=ConfMatrix,ConfusionMatrixResults=ConfusionMatrixResults)
+    ResultsLDA <- list(fitLDA = fit,accTest = accTest,ConfMatrix=ConfMatrix,ConfusionMatrixResults=ConfusionMatrixResults,accTestRun= accTestRun)
     return(ResultsLDA)
   }else return(accTest)
   

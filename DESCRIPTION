@@ -1,8 +1,8 @@
 Package: PredPsych
 Type: Package
 Title: Predictive Approaches in Psychology
-Version: 0.2
-Date: 2017-05-25
+Version: 0.3
+Date: 2017-08-25
 Author: Atesh Koul
 Maintainer: Atesh Koul <atesh.koul@gmail.com>
 Description: 

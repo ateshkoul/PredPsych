@@ -17,9 +17,9 @@ LinearDA(Data, classCol, selectedCols, cvType, nTrainFolds, ntrainTestFolds,
 
 \item{cvType}{(optional) (string) which type of cross-validation scheme to follow; One of the following values:
 \itemize{
-\item folds        =   k-fold cross-validation 
+\item folds        =   (default) k-fold cross-validation 
 \item LOSO         =   Leave-one-subject-out cross-validation
-\item holdout      =   (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+\item holdout      =   holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 \item LOTO         =   Leave-one-trial out cross-validation.      
 }}
 
@@ -66,15 +66,13 @@ a single new composite variable, the discriminant function, is produced (for det
  Rao, 1948)).
 }
 \examples{
-# simple model with data partition of 80\% and no extended results 
+# simple model with holdout data partition of 80\% and no extended results 
 LDAModel <- LinearDA(Data = KinData, classCol = 1, 
-selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),cvType="holdout")
 # Output:
 #
 # Performing Linear Discriminant Analysis
 #
-# cvType was not specified. 
-#  Using default holdout Cross-validation 
 #
 # Performing holdout Cross-validation
 # 
@@ -95,9 +93,10 @@ selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112))
 # Test Accuracy = mean accuracy from the Testing dataset
 
 # alt uses:
+# holdout cross-validation with 80\% training data
 LDAModel <- LinearDA(Data = KinData, classCol = 1,
 selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-CV=FALSE,cvFraction = 0.8,extendedResults = TRUE)
+CV=FALSE,cvFraction = 0.8,extendedResults = TRUE,cvType="holdout")
 
 # For a 10 fold cross-validation without outputting messages 
 LDAModel <-  LinearDA(Data = KinData, classCol = 1,

@@ -28,9 +28,9 @@ DTModel(Data, classCol, selectedCols, tree, cvType, nTrainFolds,
 \item{cvType}{(optional) (string) which type of cross-validation scheme to follow - only in case of CARTCV or CARTNACV;
                       One of the following values:
 \itemize{
-\item folds       =   k-fold cross-validation 
+\item folds       =   (default) k-fold cross-validation 
 \item LOSO        =   Leave-one-subject-out cross-validation
-\item holdout     =   (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+\item holdout     =   holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 \item LOTO        =   Leave-one-trial out cross-validation.
 }}
 
@@ -56,7 +56,7 @@ DTModel(Data, classCol, selectedCols, tree, cvType, nTrainFolds,
 \item{...}{(optional) additional arguments for the function}
 }
 \value{
-model result for the input tree \code{Results}  or Test accuracy \code{accTest}. If \code{extendedResults} = TRUE 
+model result for the input tree \code{Results}  or Test accuracy \code{accTest} based on \code{tree}. If \code{extendedResults} = TRUE 
 outputs Test accuracy \code{accTest} of discrimination,\code{ConfMatrix} Confusion matrices and \code{fit} the model 
 and  \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results
 }
@@ -80,35 +80,29 @@ Unlike regression methods like GLMs,  Decision Trees are more flexible and can m
 \examples{
 # generate a cart model for 10\% of the data with cross-validation
 model <- DTModel(Data = KinData,classCol=1,
-selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), tree='CART')
+selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), tree='CARTCV',cvType = "holdout")
 # Output:
 # Performing Decision Tree Analysis 
 #
-# Generating Model Tree
+# [1] "Generating crossvalidated Tree With Missing Values"
 #
 # Performing holdout Cross-validation
 # 
 # cvFraction was not specified,
-#  Using default value of 0.8 (cvFraction = 0.8)"
+#  Using default value of 0.8 (cvFraction = 0.8)" 
+# Proportion of Test/Train Data was :  0.2470588 
 # 
-# Proportion of Test/Train Data was :  0.2488954 
-# --CART MOdel --
-# 
-# [1] "Test holdout Accuracy is  0.69"
+# [1] "Test holdout Accuracy is  0.62"
 # holdout CART Analysis: 
 # cvFraction : 0.8 
-# Test Accuracy 0.69
+# Test Accuracy 0.62
 # *Legend:
 # cvFraction = Fraction of data to keep for training data 
 # Test Accuracy = Accuracy from the Testing dataset
-# [1] "done"
+
+#' # --CART MOdel --
 
 # Alternate uses:  
-# holdout cross-validation with removing missing values
-model <- DTModel(Data = KinData,classCol=1,
-selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-tree='CARTNACV')
-
 # k-fold cross-validation with removing missing values
 model <- DTModel(Data = KinData,classCol=1,
 selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
@@ -117,7 +111,7 @@ tree='CARTNACV',cvType="folds")
 # holdout cross-validation without removing missing values
 model <- DTModel(Data = KinData,classCol=1,
 selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-tree='CARTCV')
+tree='CARTCV',cvType = "holdout")
 
 # k-fold cross-validation without removing missing values
 model <- DTModel(Data = KinData,classCol=1,

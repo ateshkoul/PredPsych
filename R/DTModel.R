@@ -17,9 +17,9 @@
 #' @param cvType              (optional) (string) which type of cross-validation scheme to follow - only in case of CARTCV or CARTNACV;
 #'                            One of the following values:
 #'      \itemize{
-#'      \item folds       =   k-fold cross-validation 
+#'      \item folds       =   (default) k-fold cross-validation 
 #'      \item LOSO        =   Leave-one-subject-out cross-validation
-#'      \item holdout     =   (default) holdout Crossvalidation. Only a portion of data (cvFraction) is used.
+#'      \item holdout     =   holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 #'      \item LOTO        =   Leave-one-trial out cross-validation.
 #'      }
 #' @param ntrainTestFolds     (optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset
@@ -48,42 +48,36 @@
 #' 
 #' Unlike regression methods like GLMs,  Decision Trees are more flexible and can model nonlinear interactions.           
 #' 
-#' @return  model result for the input tree \code{Results}  or Test accuracy \code{accTest}. If \code{extendedResults} = TRUE 
+#' @return  model result for the input tree \code{Results}  or Test accuracy \code{accTest} based on \code{tree}. If \code{extendedResults} = TRUE 
 #' outputs Test accuracy \code{accTest} of discrimination,\code{ConfMatrix} Confusion matrices and \code{fit} the model 
 #' and  \code{ConfusionMatrixResults} Overall cross-validated confusion matrix results  
 #' 
 #' @examples
 #' # generate a cart model for 10% of the data with cross-validation
 #' model <- DTModel(Data = KinData,classCol=1,
-#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), tree='CART')
+#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112), tree='CARTCV',cvType = "holdout")
 #' # Output:
 #' # Performing Decision Tree Analysis 
 #' #
-#' # Generating Model Tree
+#' # [1] "Generating crossvalidated Tree With Missing Values"
 #' #
 #' # Performing holdout Cross-validation
 #' # 
 #' # cvFraction was not specified,
-#' #  Using default value of 0.8 (cvFraction = 0.8)"
+#' #  Using default value of 0.8 (cvFraction = 0.8)" 
+#' # Proportion of Test/Train Data was :  0.2470588 
 #' # 
-#' # Proportion of Test/Train Data was :  0.2488954 
-#' # --CART MOdel --
-#' # 
-#' # [1] "Test holdout Accuracy is  0.69"
+#' # [1] "Test holdout Accuracy is  0.62"
 #' # holdout CART Analysis: 
 #' # cvFraction : 0.8 
-#' # Test Accuracy 0.69
+#' # Test Accuracy 0.62
 #' # *Legend:
 #' # cvFraction = Fraction of data to keep for training data 
 #' # Test Accuracy = Accuracy from the Testing dataset
-#' # [1] "done"
+#' 
+#' #' # --CART MOdel --
 #' 
 #' # Alternate uses:  
-#' # holdout cross-validation with removing missing values
-#' model <- DTModel(Data = KinData,classCol=1,
-#' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-#' tree='CARTNACV')
-#' 
 #' # k-fold cross-validation with removing missing values
 #' model <- DTModel(Data = KinData,classCol=1,
 #' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
@@ -92,7 +86,7 @@
 #' # holdout cross-validation without removing missing values
 #' model <- DTModel(Data = KinData,classCol=1,
 #' selectedCols = c(1,2,12,22,32,42,52,62,72,82,92,102,112),
-#' tree='CARTCV')
+#' tree='CARTCV',cvType = "holdout")
 #' 
 #' # k-fold cross-validation without removing missing values
 #' model <- DTModel(Data = KinData,classCol=1,
@@ -128,6 +122,18 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
   
   if(!(tree %in% c("CART","CARTNACV","CARTCV","CF","RF"))) stop("Unknown tree provided")
   
+  # createDataPartition has different behavior for numeric and factor vectors
+  # the random sampling is done within the levels of y when y is a factor in an 
+  # attempt to balance the class distributions within the splits.
+  # 
+  # 
+  # For numeric y, the sample is split into groups sections based on percentiles 
+  # and sampling is done within these subgroups (see ?createDataPartition for more details)
+  # 
+  # Make the outcome factor anyways
+  Data[,classCol] <- factor(Data[,classCol])
+  
+  
   switch(tree,
          CART = {
            #library(rpart)
@@ -135,8 +141,8 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            featureColNames <- selectedColNames[-grep(names(Data)[classCol],selectedColNames)]
            responseColName <- names(Data)[classCol]
            
-           if(!missing(cvType)) stop("cvType provided is different from holdout. Did you want to perform crossvalidation? 
-            Please Use tree = CARTNACV or tree = CARTCV for Cross-validated CART")
+           if(!missing(cvType)) stop(cat("cvType provided (",cvType,") is different from holdout. Did you want to perform crossvalidation? 
+            Please Use tree = CARTNACV or tree = CARTCV for Cross-validated CART"))
            
            
            
@@ -144,19 +150,22 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            
            if(!silent) cat("\nPerforming holdout Cross-validation\n")
            
-           if(missing(cvFraction)){
-             if(!silent) cat("\ncvFraction was not specified, \n Using default value of 0.8 (cvFraction = 0.8)\n")
-             cvFraction = 0.8
-           }
-           
-           prunIndex <- createDataPartition(y=Data[,classCol],p=cvFraction)
-           DataTest <- Data[!(1:nrow(Data) %in% prunIndex$Resample1),]
-           DataModel <- Data[1:nrow(Data) %in% prunIndex$Resample1,]
-           
-           cat("\nProportion of Test/Train Data was : ",nrow(DataTest)/nrow(DataModel),"\n")
+           # See the argument tree = 'CARTCV' for  cross validation 
+           # if(missing(cvFraction)){
+           #   if(!silent) cat("\ncvFraction was not specified, \n Using default value of 0.8 (cvFraction = 0.8)\n")
+           #   cvFraction = 0.8
+           # }
+           # 
+           # prunIndex <- createDataPartition(y=Data[,classCol],p=cvFraction)
+           # DataTest <- Data[!(1:nrow(Data) %in% prunIndex$Resample1),]
+           # DataModel <- Data[1:nrow(Data) %in% prunIndex$Resample1,]
+           # 
+           # cat("\nProportion of Test/Train Data was : ",nrow(DataTest)/nrow(DataModel),"\n")
            
            # Full tree
-           fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DataModel[,selectedCols],method = 'class')  
+           #fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DataModel[,selectedCols],method = 'class')  
+           
+           fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=Data[,selectedCols],method = 'class')  
            #summary(fit)
            cp = fit$cptable[which( fit$cptable[,'xerror']==min(fit$cptable[,'xerror'])),'CP']
            prunedModelF <- prune(fit,cp=cp)
@@ -166,29 +175,36 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            text(prunedModelF, use.n=TRUE, all=TRUE, cex=.8)
            if(!silent) print(prunedModelF)
            
-           predictedTest <- predict(prunedModelF,DataTest[,featureColNames],type='class')
-           truthTest <- DataTest[,classCol]
-           accTest <- sum(predictedTest==truthTest)/length(predictedTest)
            
-           ConfMatrix <- confusionMatrix(truthTest,predictedTest)
+           # See the argument tree = 'CARTCV' for  cross validation 
+           # 
+           # predictedTest <- predict(prunedModelF,DataTest[,featureColNames],type='class')
+           # truthTest <- DataTest[,classCol]
+           # accTest <- sum(predictedTest==truthTest)/length(predictedTest)
+           # 
+           # ConfMatrix <- confusionMatrix(truthTest,predictedTest)
            
-           if(!silent){
-             print(paste("Test holdout Accuracy is ",signif(accTest,2)))
-             cat("holdout CART Analysis:",'\ncvFraction :', cvFraction,"\nTest Accuracy",signif(mean(accTest),2))
-             
-             cat("\n*Legend:\ncvFraction = Fraction of data to keep for training data",
-                 "\nTest Accuracy = Accuracy from the Testing dataset\n")
-           }
+           # if(!silent){
+           #   print(paste("Test holdout Accuracy is ",signif(accTest,2)))
+           #   cat("holdout CART Analysis:",'\ncvFraction :', cvFraction,"\nTest Accuracy",signif(mean(accTest),2))
+           #   
+           #   cat("\n*Legend:\ncvFraction = Fraction of data to keep for training data",
+           #       "\nTest Accuracy = Accuracy from the Testing dataset\n")
+           # }
+           # 
+           # if(!is.null(NewData)){
+           #   newDataprediction <- predictNewData(fit,NewData,type='class')
+           #   fit <- list(fit=fit,newDataprediction=newDataprediction)
+           # }
+           # 
+           # if(extendedResults){
+           #   Results <- list(fit=fit,accTest=accTest,ConfMatrix=ConfMatrix)
+           #   return(Results)
+           # }else return(accTest)
+           # 
            
-           if(!is.null(NewData)){
-             newDataprediction <- predictNewData(fit,NewData,type='class')
-             fit <- list(fit=fit,newDataprediction=newDataprediction)
-           }
            
-           if(extendedResults){
-             Results <- list(fit=fit,accTest=accTest,ConfMatrix=ConfMatrix)
-             return(Results)
-           }else return(accTest)
+           return(fit)
            
            if(!silent) print('done')
            },
@@ -202,13 +218,13 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            DatNoNA[,classCol] <- factor(DatNoNA[,classCol])
            
            if(missing(cvType)){
-             if(!silent) cat("cvType was not specified, \n Using default holdout Cross-validation \n")
-             cvType <- "holdout"
+             if(!silent) cat("cvType was not specified, \n Using default k-folds Cross-validation \n")
+             cvType <- "folds"
            }
 
            Results <- cv.CART(DatNoNA,classCol,selectedCols,cvType=cvType,ntrainTestFolds=ntrainTestFolds,
                               modelTrainFolds=modelTrainFolds,nTrainFolds=nTrainFolds,foldSep=foldSep,
-                              extendedResults=extendedResults,silent=silent,NewData=NewData,...)
+                              extendedResults=extendedResults,silent=silent,NewData=NewData,cvFraction=cvFraction,SetSeed=SetSeed,...)
            
            
            if(!silent) print('done')
@@ -217,14 +233,14 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            #library(rpart)
            if(!silent) print("Generating crossvalidated Tree With Missing Values")
            if(missing(cvType)){
-             if(!silent) cat("cvType was not specified, \n Using default holdout Cross-validation \n")
-             cvType <- "holdout"
+             if(!silent) cat("cvType was not specified, \n Using default k-folds Cross-validation \n")
+             cvType <- "folds"
            }
            # Important to write arguments otherwise the function doesn't receive the specific arguments
            # using the '=' for argument ensures that correct arguments are passed to the function
            Results <- cv.CART(Data,classCol,selectedCols,cvType=cvType,ntrainTestFolds=ntrainTestFolds,
                               modelTrainFolds=modelTrainFolds,nTrainFolds=nTrainFolds,foldSep=foldSep,
-                              extendedResults=extendedResults,silent=silent,NewData=NewData,...)
+                              extendedResults=extendedResults,silent=silent,NewData=NewData,cvFraction=cvFraction,SetSeed=SetSeed,...)
            
            if(!silent) print('done')
            
