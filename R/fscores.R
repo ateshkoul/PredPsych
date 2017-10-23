@@ -39,6 +39,14 @@
 #'
 #' @export
 fscore <- function(Data,classCol,featureCol,silent=FALSE){
+  
+  # Make the outcome factor anyways
+  # Modified so that it works even with tibble; force the tibble to be a dataframe
+  # This is not the best way to proceed; Ideally, all the code should be updated 
+  # to work with tibble
+  if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
+  
+  
   if(!silent) cat("\nPerforming Feature selection f-score analysis \n\n")
   tr <- function(m) return(sum(diag(m)))
   # separate positive and negative feature sets

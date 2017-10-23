@@ -132,6 +132,10 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   # and sampling is done within these subgroups (see ?createDataPartition for more details)
   # 
   # Make the outcome factor anyways
+  # Modified so that it works even with tibble; force the tibble to be a dataframe
+  # This is not the best way to proceed; Ideally, all the code should be updated 
+  # to work with tibble
+  if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
   Data[,classCol] <- factor(Data[,classCol])
   
   

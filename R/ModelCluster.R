@@ -41,7 +41,7 @@
 #'
 #' @export
 ModelCluster <- function(Data,NewData=NULL,G,silent=FALSE,...){
-  #library(mclust)
+  
   if(!silent) cat("\nPerforming Cluster analysis \n\n")
 
   set.seed(111)

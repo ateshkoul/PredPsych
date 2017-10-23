@@ -110,6 +110,12 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,plot=T
   # extras <- match.call(expand.dots= F)$...
   if(!silent) cat("\nPerforming Permutation Analysis for Classification \n\n")
   
+  # Modified so that it works even with tibble; force the tibble to be a dataframe
+  # This is not the best way to proceed; Ideally, all the code should be updated 
+  # to work with tibble
+  if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
+
+  
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
   
   selectedColNames <- names(Data)[selectedCols]
