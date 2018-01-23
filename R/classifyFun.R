@@ -3,8 +3,8 @@
 #' function for performing generic classification Analysis
 #' 
 #' @param Data              (dataframe) dataframe of the data
-#' @param classCol          (numeric) column number that contains the variable to be predicted
-#' @param selectedCols      (optional) (numeric) all the columns of data that would be used either as predictor or as feature
+#' @param classCol          (numeric or string) column number that contains the variable to be predicted
+#' @param selectedCols      (optional) (numeric or string) all the columns of data that would be used either as predictor or as feature
 #' @param cvType            (optional) (string) which type of cross-validation scheme to follow; One of the following values:
 #'      \itemize{
 #'      \item folds       =  (default) k-fold cross-validation 
@@ -115,14 +115,9 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   
   if(!(cvType %in% c("holdout","folds","LOSO","LOTO"))) stop(cat("\n cvType is not one of holdout,folds or LOSO. You provided",cvType))
   
-  
-  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
-  
   if(!silent) cat("\nPerforming Classification Analysis \n\n")
   
-  # get the features:  in case u enter names of columns, it works anyways
-  ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
-  
+    
   # createDataPartition has different behavior for numeric and factor vectors
   # the random sampling is done within the levels of y when y is a factor in an 
   # attempt to balance the class distributions within the splits.
@@ -136,14 +131,29 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   # This is not the best way to proceed; Ideally, all the code should be updated 
   # to work with tibble
   if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
-  Data[,classCol] <- factor(Data[,classCol])
+ 
+  # get the classCol name:  in case u enter names of columns, it works anyways
+  # ensures that we have both correct classCol and predictorColNames as the function expects
+  if(is.character(classCol)){
+    predictorColNames <- classCol
+    classCol <- grep(predictorColNames,names(Data))
+  }else    predictorColNames <- names(Data)[classCol]
   
+  # old way
+  # predictorColNames <- names(Data)[classCol]
+  
+  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+  
+  # get the features:  in case u enter names of columns, it works anyways
+  ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
+  
+  # protection measure if u forgot to put predictor column in the selected list
+  if(!(predictorColNames %in% selectedColNames)) stop("\n Predictor Column name not present in selected column name list")
   
   # get feature columns without response
   featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
-  predictorColNames <- names(Data)[classCol]
   
-  
+  Data[,classCol] <- factor(Data[,classCol])
   
 
   # if predictor has missing, remove those columns

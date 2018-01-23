@@ -10,9 +10,9 @@ ClassPerm(Data, classCol, selectedCols, classifierFun, nSims = 1000,
 \arguments{
 \item{Data}{(dataframe) dataframe of the data}
 
-\item{classCol}{(numeric) column number that contains the variable to be predicted}
+\item{classCol}{(numeric or string) column number that contains the variable to be predicted}
 
-\item{selectedCols}{(optional) (numeric) all the columns of data that would be used either as predictor or as feature}
+\item{selectedCols}{(optional) (numeric or string) all the columns of data that would be used either as predictor or as feature}
 
 \item{classifierFun}{(optional) (function) classifier function}
 

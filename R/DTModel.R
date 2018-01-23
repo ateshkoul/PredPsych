@@ -4,8 +4,8 @@
 #' A simple function to create Decision Trees
 #' 
 #' @param Data                (dataframe) a data frame with regressors and response
-#' @param classCol            (numeric) which column should be used as response col
-#' @param selectedCols        (optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)
+#' @param classCol            (numeric or string) which column should be used as response col
+#' @param selectedCols        (optional) (numeric or string) which columns should be treated as data(features + response) (defaults to all columns)
 #' @param tree                           which decision tree model to implement; One of the following values:
 #'      \itemize{
 #'      \item CART        =   Classification And Regression Tree; 
@@ -135,15 +135,37 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
   # This is not the best way to proceed; Ideally, all the code should be updated 
   # to work with tibble
   if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
+  
+  # get the classCol name:  in case u enter names of columns, it works anyways
+  # ensures that we have both correct classCol and responseColName as the function expects
+  if(is.character(classCol)){
+    responseColName <- classCol
+    classCol <- grep(responseColName,names(Data))
+  }else    responseColName <- names(Data)[classCol]
+  
+  
   Data[,classCol] <- factor(Data[,classCol])
   
   
   switch(tree,
          CART = {
-           #library(rpart)
-           selectedColNames <- names(Data)[selectedCols]
+           if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+           # get the features:  in case u enter names of columns, it works anyways
+           ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
+           
+           # old way
+           # selectedColNames <- names(Data)[selectedCols]
+           # 
+            
+           # protection measure if u forgot to put predictor column in the selected list
+           if(!(responseColName %in% selectedColNames)) stop("\n Response Column name not present in selected column name list")
+           
+           
+           
            featureColNames <- selectedColNames[-grep(names(Data)[classCol],selectedColNames)]
-           responseColName <- names(Data)[classCol]
+           
+           # old way - already implemented above
+           # responseColName <- names(Data)[classCol]
            
            if(!missing(cvType)) stop(cat("cvType provided (",cvType,") is different from holdout. Did you want to perform crossvalidation? 
             Please Use tree = CARTNACV or tree = CARTCV for Cross-validated CART"))
@@ -251,10 +273,19 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            return(Results)
          },
          CF = {# Cluster tree
+           
            #library(party)
-           selectedColNames <- names(Data)[selectedCols]
+           if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+           # get the features:  in case u enter names of columns, it works anyways
+           ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
+           
+           # old way
+           # selectedColNames <- names(Data)[selectedCols]
+           
            featureColNames <- selectedColNames[-grep(names(Data)[classCol],selectedColNames)]
-           responseColName <- names(Data)[classCol]
+           
+           # old way - already implemented above
+           # responseColName <- names(Data)[classCol]
            if(!silent) print("Generating conditional inference framework Tree")
            # remove NAs as I use a stratified cross validation (may not be necessary)
            DatNoNA <- Data[!is.na(Data[,classCol]),]
@@ -267,10 +298,15 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            if(!silent) print('done')
            return(fit)},
          RF = {  # Random forest
-           #library(randomForest)
-           selectedColNames <- names(Data)[selectedCols]
+           if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+           # get the features:  in case u enter names of columns, it works anyways
+           ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
+           
+           # old way
+           # selectedColNames <- names(Data)[selectedCols]
            featureColNames <- selectedColNames[-grep(names(Data)[classCol],selectedColNames)]
-           responseColName <- names(Data)[classCol]
+           # old way - already implemented above
+           # responseColName <- names(Data)[classCol]
            if(!silent) print("Generating Random Forest Tree")
            # remove NAs as I use a stratified cross validation (may not be necessary)
            DatNoNA <- Data[!is.na(Data[,classCol]),]
@@ -287,14 +323,33 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
 
 cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrainFolds,nTrainFolds,
                     foldSep,cvFraction,extendedResults = FALSE,silent=FALSE,NewData=NULL,...){
-  # if nothing specific is provided, default to all the columns
-  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+  
   
   if(!(cvType %in% c("holdout","folds","LOSO","LOTO"))) stop(cat("\n cvType is not one of holdout,folds or LOSO. You provided",cvType))
   
-  # get the features
-  selectedColNames <- names(Data)[selectedCols]
-  responseColName <- names(Data)[classCol]
+  # get the classCol name:  in case u enter names of columns, it works anyways
+  # ensures that we have both correct classCol and responseColName as the function expects
+  if(is.character(classCol)){
+    responseColName <- classCol
+    classCol <- grep(responseColName,names(Data))
+  }else    responseColName <- names(Data)[classCol]
+  
+  # old way - already implemented above
+  # responseColName <- names(Data)[classCol]
+  
+  # if nothing specific is provided, default to all the columns
+  if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
+  
+  # get the features:  in case u enter names of columns, it works anyways
+  ifelse(is.character(selectedCols),selectedColNames <- selectedCols,selectedColNames <- names(Data)[selectedCols])
+  
+  # old way
+  # selectedColNames <- names(Data)[selectedCols]
+  
+  
+  
+  # protection measure if u forgot to put predictor column in the selected list
+  if(!(responseColName %in% selectedColNames)) stop("\n Response Column name not present in selected column name list")
   
   # make it a factor anyways
   Data[,classCol] <- factor(Data[,classCol])

@@ -12,9 +12,9 @@ DTModel(Data, classCol, selectedCols, tree, cvType, nTrainFolds,
 \arguments{
 \item{Data}{(dataframe) a data frame with regressors and response}
 
-\item{classCol}{(numeric) which column should be used as response col}
+\item{classCol}{(numeric or string) which column should be used as response col}
 
-\item{selectedCols}{(optional)(numeric) which columns should be treated as data(features + response) (defaults to all columns)}
+\item{selectedCols}{(optional) (numeric or string) which columns should be treated as data(features + response) (defaults to all columns)}
 
 \item{tree}{which decision tree model to implement; One of the following values:
 \itemize{

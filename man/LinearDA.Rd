@@ -11,9 +11,9 @@ LinearDA(Data, classCol, selectedCols, cvType, nTrainFolds, ntrainTestFolds,
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
 
-\item{classCol}{(numeric)  column number that contains the variable to be predicted}
+\item{classCol}{(numeric or string)  column number that contains the variable to be predicted}
 
-\item{selectedCols}{(optional) (numeric)  all the columns of data that would be used either as predictor or as feature}
+\item{selectedCols}{(optional) (numeric or string) all the columns of data that would be used either as predictor or as feature}
 
 \item{cvType}{(optional) (string) which type of cross-validation scheme to follow; One of the following values:
 \itemize{
