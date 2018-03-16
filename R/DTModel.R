@@ -167,14 +167,12 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            # old way - already implemented above
            # responseColName <- names(Data)[classCol]
            
-           if(!missing(cvType)) stop(cat("cvType provided (",cvType,") is different from holdout. Did you want to perform crossvalidation? 
+           if(!missing(cvType)) stop(cat("cvType provided (",cvType,"). Did you want to perform crossvalidation? 
             Please Use tree = CARTNACV or tree = CARTCV for Cross-validated CART"))
            
            
            
            if(!silent) cat("Generating Model Tree\n")
-           
-           if(!silent) cat("\nPerforming holdout Cross-validation\n")
            
            # See the argument tree = 'CARTCV' for  cross validation 
            # if(missing(cvFraction)){
@@ -191,7 +189,7 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            # Full tree
            #fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=DataModel[,selectedCols],method = 'class')  
            
-           fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=Data[,selectedCols],method = 'class')  
+           fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=Data[,selectedCols],method = 'class',...)  
            #summary(fit)
            cp = fit$cptable[which( fit$cptable[,'xerror']==min(fit$cptable[,'xerror'])),'CP']
            prunedModelF <- prune(fit,cp=cp)
@@ -229,8 +227,9 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
            # }else return(accTest)
            # 
            
-           
-           return(fit)
+           # Just to keep it consistent with outputs from other tree types
+           Results <- list(fit = fit)
+           return(Results)
            
            if(!silent) print('done')
            },
@@ -322,10 +321,12 @@ DTModel <- function(Data,classCol,selectedCols,tree,cvType,nTrainFolds,ntrainTes
 }
 
 cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrainFolds,nTrainFolds,
-                    foldSep,cvFraction,extendedResults = FALSE,silent=FALSE,NewData=NULL,...){
+                    foldSep,cvFraction,extendedResults = FALSE,silent=FALSE,NewData=NULL,SetSeed=SetSeed,...){
   
   
   if(!(cvType %in% c("holdout","folds","LOSO","LOTO"))) stop(cat("\n cvType is not one of holdout,folds or LOSO. You provided",cvType))
+  
+  if(SetSeed)  set.seed(111)
   
   # get the classCol name:  in case u enter names of columns, it works anyways
   # ensures that we have both correct classCol and responseColName as the function expects
@@ -390,7 +391,8 @@ cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrain
              testDataFold <- ModelTrainData[trainIndexModel==i,]
              
              # CV = FALSE as we don't want leave-one-trial out cv
-             fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainDataFold[,selectedCols],method = 'class')
+             fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),
+                          data=trainDataFold[,selectedCols],method = 'class',...)
              
              # The predict funcion redirects based on the class of the object
              # predict as a function thus becomes variable in it's output and 
@@ -450,7 +452,8 @@ cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrain
              testData <- Data[Data[,foldSep]==Subs[i],]
              
              # CV = FALSE as we don't want leave-one-trial out cv
-             fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainData[,selectedCols],method = 'class')
+             fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),
+                          data=trainData[,selectedCols],method = 'class',...)
              
              # The predict funcion redirects based on the class of the object
              # predict as a function thus becomes variable in it's output and 
@@ -497,7 +500,8 @@ cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrain
            testData <- Data[!(1:nrow(Data) %in% index$Resample1),]
            cat("Proportion of Test/Train Data was : ",nrow(testData)/nrow(trainData),"\n")
            
-           fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainData[,selectedCols],method = 'class')
+           fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),
+                        data=trainData[,selectedCols],method = 'class',...)
            
            # The predict funcion redirects based on the class of the object
            # predict as a function thus becomes variable in it's output and 
@@ -526,7 +530,7 @@ cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrain
            prunedModel <- prune(fit,cp=cp)
            
            plot(prunedModel, uniform=TRUE,
-                main="Pruned Classification Tree (without Missing)")
+                main="Pruned Classification Tree")
            text(prunedModel, use.n=TRUE, all=TRUE, cex=.8)
            if(!silent) print(prunedModel)
            
@@ -542,7 +546,8 @@ cv.CART <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,modelTrain
              trainData <- Data[-i,]
              testData <-  Data[i,]
              
-             fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),data=trainData[,selectedCols],method = 'class')
+             fit <- rpart(as.formula(paste(responseColName,"~",paste0(featureColNames,collapse = "+"))),
+                          data=trainData[,selectedCols],method = 'class',...)
              
              # The predict funcion redirects based on the class of the object
              # predict as a function thus becomes variable in it's output and 
