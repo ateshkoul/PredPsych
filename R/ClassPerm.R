@@ -113,7 +113,12 @@ ClassPerm <- function(Data,classCol,selectedCols,classifierFun,nSims=1000,plot=T
   # Modified so that it works even with tibble; force the tibble to be a dataframe
   # This is not the best way to proceed; Ideally, all the code should be updated 
   # to work with tibble
-  if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
+  # make it a bit generic to handle matrices as well along with a warning 
+  permittedDataClass <- c("tbl_df","matrix")
+  if(any(permittedDataClass %in% class(Data))){
+    warning(cat("the data entered is of the class ",class(Data),". Coersing it to be a dataframe. Check results"))
+    Data <- as.data.frame(Data)
+  }
   
   # get the classCol name:  in case u enter names of columns, it works anyways
   # ensures that we have both correct classCol and predictorColNames as the function expects

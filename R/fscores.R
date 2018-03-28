@@ -44,7 +44,12 @@ fscore <- function(Data,classCol,featureCol,silent=FALSE){
   # Modified so that it works even with tibble; force the tibble to be a dataframe
   # This is not the best way to proceed; Ideally, all the code should be updated 
   # to work with tibble
-  if("tbl_df" %in% class(Data)) Data <- as.data.frame(Data)
+  # make it a bit generic to handle matrices as well along with a warning 
+  permittedDataClass <- c("tbl_df","matrix")
+  if(any(permittedDataClass %in% class(Data))){
+    warning(cat("the data entered is of the class ",class(Data),". Coersing it to be a dataframe. Check results"))
+    Data <- as.data.frame(Data)
+  }
   
   
   if(!silent) cat("\nPerforming Feature selection f-score analysis \n\n")
