@@ -4,7 +4,7 @@
 \alias{fscore}
 \title{f-score}
 \usage{
-fscore(Data, classCol, featureCol)
+fscore(Data, classCol, featureCol, silent = FALSE)
 }
 \arguments{
 \item{Data}{(dataframe) Data dataframe}
@@ -12,6 +12,8 @@ fscore(Data, classCol, featureCol)
 \item{classCol}{(numeric) column with different classes}
 
 \item{featureCol}{(numeric) all the columns that contain features}
+
+\item{silent}{(optional) (logical) whether to print messages or not}
 }
 \value{
 named numeric \code{f-scores}
@@ -23,17 +25,28 @@ A simple function to generate F-scores (Fisher scores) for ranking features
 The function implements F-score for feature selection.
 F-score provides a measure of how well a single feature at a time can discriminate between different 
 classes. The higher the F-score, the better the discriminatory power of that feature
+
+The F-score is calculated for two classes
 }
 \examples{
 # calculate f-scores for 10\% of movement
 fscore(KinData,classCol = 1,featureCol = c(2,12,22,32,42,52,62,72,82,92,102,112))
-
-
+# Output:
+# Performing Feature selection f-score analysis 
+# --f-scores--
 
 }
 \author{
 Atesh Koul, C'MON unit, Istituto Italiano di Tecnologia
 
 \email{atesh.koul@iit.it}
+}
+\references{
+Duda, R. O., Hart, P. E., & Stork, D. G. (2000). Pattern Classification. Wiley-Interscience (Vol. 24).
+
+Chen, Y., & Lin, C.-J. (2006). Combining SVMs with Various Feature Selection Strategies.
+In I. Guyon, M. Nikravesh, S. Gunn, & L. A. Zadeh (Eds.), 
+Feature Extraction: Foundations and Applications (Vol. 324, pp. 315-324). 
+Berlin, Heidelberg: Springer Berlin Heidelberg.
 }
 
