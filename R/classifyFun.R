@@ -2,35 +2,37 @@
 #'
 #' function for performing generic classification Analysis
 #' 
-#' @param Data              (dataframe) dataframe of the data
-#' @param classCol          (numeric or string) column number that contains the variable to be predicted
-#' @param selectedCols      (optional) (numeric or string) all the columns of data that would be used either as predictor or as feature
-#' @param cvType            (optional) (string) which type of cross-validation scheme to follow; One of the following values:
+#' @param Data                 (dataframe) dataframe of the data
+#' @param classCol             (numeric or string) column number that contains the variable to be predicted
+#' @param selectedCols         (optional) (numeric or string) all the columns of data that would be used either as predictor or as feature
+#' @param cvType               (optional) (string) which type of cross-validation scheme to follow; One of the following values:
 #'      \itemize{
 #'      \item folds       =  (default) k-fold cross-validation 
 #'      \item LOSO        =  Leave-one-subject-out cross-validation
 #'      \item holdout     =  holdout Crossvalidation. Only a portion of data (cvFraction) is used for training.
 #'      \item LOTO        =  Leave-one-trial out cross-validation.
 #'      }
-#' @param ntrainTestFolds    (optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset
-#' @param nTrainFolds        (optional) (parameter for only k-fold cross-validation) No. of folds in which to further divide Training dataset
-#' @param modelTrainFolds =  (optional) (parameter for only k-fold cross-validation) specific folds from the first train/test split
+#' @param ntrainTestFolds       (optional) (parameter for only k-fold cross-validation) No. of folds for training and testing dataset
+#' @param nTrainFolds           (optional) (parameter for only k-fold cross-validation) No. of folds in which to further divide Training dataset
+#' @param modelTrainFolds =     (optional) (parameter for only k-fold cross-validation) specific folds from the first train/test split
 #'  (ntrainTestFolds) to use for training
-#' @param nTuneFolds         (optional) (parameter for only k-fold cross-validation) No. of folds for Tuning
-#' @param tuneFolds          (optional) (parameter for only k-fold cross-validation) specific folds from the above nTuneFolds to use for tuning
-#' @param foldSep            (numeric)  (parameter for only Leave-One_subject Out) mandatory column number for Leave-one-subject out cross-validation.
-#' @param cvFraction         (optional) (numeric) Fraction of data to keep for training data
-#' @param classifierName     (optional) (string) name of the classifier to be used
-#' @param genclassifier      (optional) (function or string) a classifier function or a name (e.g. Classifier.svm)
-#' @param ranges             (optional) (list)  ranges for tuning support vector machine
-#' @param tune               (optional) (logical) whether tuning of svm parameters should be performed or not
-#' @param cost               (optional) (numeric) regularization parameter of svm
-#' @param gamma              (optional) (numeric)  rbf kernel parameter
-#' @param silent             (optional) (logical) whether to print messages or not
-#' @param extendedResults    (optional) (logical) Return extended results with model and other metrics
-#' @param SetSeed            (optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
+#' @param nTuneFolds            (optional) (parameter for only k-fold cross-validation) No. of folds for Tuning
+#' @param tuneFolds             (optional) (parameter for only k-fold cross-validation) specific folds from the above nTuneFolds to use for tuning
+#' @param foldSep               (numeric)  (parameter for only Leave-One_subject Out) mandatory column number for Leave-one-subject out cross-validation.
+#' @param cvFraction            (optional) (numeric) Fraction of data to keep for training data
+#' @param classifierName        (optional) (string) name of the classifier to be used
+#' @param genclassifier         (optional) (function or string) a classifier function or a name (e.g. Classifier.svm)
+#' @param ranges                (optional) (list)  ranges for tuning support vector machine
+#' @param tune                  (optional) (logical) whether tuning of svm parameters should be performed or not
+#' @param cost                  (optional) (numeric) regularization parameter of svm
+#' @param gamma                 (optional) (numeric)  rbf kernel parameter
+#' @param silent                (optional) (logical) whether to print messages or not
+#' @param extendedResults       (optional) (logical) Return extended results with model and other metrics
+#' @param SetSeed               (optional) (logical) Whether to setseed or not. use SetSeed to seed the random number generator to get consistent results; 
 #'                                      set false only for permutation tests
-#' @param NewData            (optional) (dataframe) New Data frame features for which the class membership is requested                                   
+#' @param NewData               (optional) (dataframe) New Data frame features for which the class membership is requested                                   
+#' @param force_class_as_factor (optional) (logical) parameter that allows the function to run regressions.
+#' @param confusionMatrix_Results(optional) (logical) generate confusion matrix results or not. necessary for regression to be FALSE.
 #' @param ...                (optional) additional arguments for the function                             
 #' 
 #' @details 
@@ -99,7 +101,7 @@
 #' @export
 classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrainFolds,modelTrainFolds,nTuneFolds,tuneFolds,foldSep,cvFraction,
                         ranges=NULL,tune=FALSE,cost=1,gamma=0.5,classifierName='svm',genclassifier,silent=FALSE,extendedResults = FALSE,
-                        SetSeed=TRUE,NewData=NULL,...){
+                        SetSeed=TRUE,NewData=NULL,force_class_as_factor=TRUE,confusionMatrix_Results=TRUE,...){
 
   
   #library(e1071)
@@ -158,7 +160,12 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   # get feature columns without response
   featureColNames <- selectedColNames[-match(names(Data)[classCol],selectedColNames)]
   
-  Data[,classCol] <- factor(Data[,classCol])
+  # this parameter is essential to be changed to force_class_as_factor=FALSE to let the algorithm run regression
+  # keep in mind to change the regression function accordingly
+  if(force_class_as_factor){
+    Data[,classCol] <- factor(Data[,classCol])
+  }
+  
   
 
   # if predictor has missing, remove those columns
@@ -417,8 +424,10 @@ classifyFun <- function(Data,classCol,selectedCols,cvType,ntrainTestFolds,nTrain
   )
   #Results <- list(acc=acc,accTest=accTest)
   #return(Results)
+  if(confusionMatrix_Results){
+    ConfusionMatrixResults <- overallConfusionMetrics(ConfMatrix)
+  }else ConfusionMatrixResults <- NULL
   # get overall confusion Matrix results
-  ConfusionMatrixResults <- overallConfusionMetrics(ConfMatrix)
   
   if(!is.null(NewData)){
     newDataprediction <- predictNewData(classificationResults$model,NewData,type='class')
@@ -505,3 +514,21 @@ Classifier.knn <- function(trainData,testData,predictorColNames,featureColNames,
   accList <- list(accTest=accTest,ConfMatrix=ConfMatrix,model=model)
   return(accList)
 }
+
+
+Regressor.svm <- function(trainData,testData,predictorColNames,featureColNames,...){
+  model <- do.call('svm',c(list(y=trainData[,predictorColNames],x=trainData[,featureColNames]),...))
+  # test with train data
+  pred <- predict(model, testData[,featureColNames])
+  pred_matrix <- data.frame(testData =testData[,predictorColNames],prediction=pred)
+  accTest <- summary(lm(testData~prediction,data=pred_matrix))$r.squared
+  
+  
+  ConfMatrix <- NULL
+  accList <- list(accTest=accTest,ConfMatrix=ConfMatrix,model=model)
+  return(accList)
+  
+}
+
+
+
