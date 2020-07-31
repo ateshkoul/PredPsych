@@ -46,7 +46,15 @@ DimensionRed <- function(Data,method="MDS",selectedCols,outcome=NA,plot=FALSE,si
   
   if(missing(selectedCols))  selectedCols <- 1:length(names(Data))
   if(plot & any(is.na(outcome)))  cat("Perhaps you forgot the classCol vector \nPlease enter the classCol vector for the plot")
-  
+  # Modified so that it works even with tibble; force the tibble to be a dataframe
+  # This is not the best way to proceed; Ideally, all the code should be updated 
+  # to work with tibble
+  # make it a bit generic to handle matrices as well along with a warning 
+  permittedDataClass <- c("tbl_df","matrix")
+  if(any(permittedDataClass %in% class(Data))){
+    warning(cat("the data entered is of the class ",class(Data),". Coersing it to be a dataframe. Check results"))
+    Data <- as.data.frame(Data)
+  }
   
   switch(method,
          MDS = {
